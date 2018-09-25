@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_movement_catalog.dao.MovementCatalogDao">
+    
+	<sql id="movementCatalogColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.parent_id AS "parentId",
+		a.parent_name AS "parentName",
+		a.level AS "level",
+		a.seq AS "seq",
+		a.is_show AS "isShow",
+		a.catalog_level AS "catalogLevel",
+		a.b_movement_catalog_field01 AS "bMovementCatalogField01",
+		a.b_movement_catalog_field02 AS "bMovementCatalogField02",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="movementCatalogJoins">
+	</sql>
+    
+	<select id="get" resultType="MovementCatalog">
+		SELECT 
+			<include refid="movementCatalogColumns"/>
+		FROM b_movement_catalog a
+		<include refid="movementCatalogJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MovementCatalog">
+		SELECT 
+			<include refid="movementCatalogColumns"/>
+		FROM b_movement_catalog a
+		<include refid="movementCatalogJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="parentName != null and parentName != ''">
+				AND a.parent_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{parentName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{parentName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{parentName},'%')</if>
+			</if>
+			<if test="parentId != null and parentId != ''">
+				AND a.parent_id = #{parentId} 
+					
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MovementCatalog">
+		SELECT 
+			<include refid="movementCatalogColumns"/>
+		FROM b_movement_catalog a
+		<include refid="movementCatalogJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_movement_catalog(
+			id,
+			name,
+			parent_id,
+			parent_name,
+			level,
+			seq,
+			is_show,
+			catalog_level,
+			b_movement_catalog_field01,
+			b_movement_catalog_field02,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{name},
+			#{parentId},
+			#{parentName},
+			#{level},
+			#{seq},
+			#{isShow},
+			#{catalogLevel},
+			#{bMovementCatalogField01},
+			#{bMovementCatalogField02},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_movement_catalog SET 	
+			name = #{name},
+			parent_id = #{parentId},
+			parent_name = #{parentName},
+			level = #{level},
+			seq = #{seq},
+			is_show = #{isShow},
+			catalog_level = #{catalogLevel},
+			b_movement_catalog_field01 = #{bMovementCatalogField01},
+			b_movement_catalog_field02 = #{bMovementCatalogField02},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_movement_catalog SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

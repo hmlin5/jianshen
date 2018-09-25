@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_course.dao.CourseDao">
+    
+	<sql id="courseColumns">
+		a.id AS "id",
+		a.catalog_ids AS "catalogIds",
+		a.catalog_id AS "catalogId",
+		a.catalog_name AS "catalogName",
+		a.gym_id AS "gymId",
+		a.gym_img_url AS "gymImgUrl",
+		a.recomend_rage AS "recomendRage",
+		a.name AS "name",
+		a.description AS "description",
+		a.movement_num AS "movementNum",
+		a.duration AS "duration",
+		a.gym_name AS "gymName",
+		a.b_course_field01 AS "bCourseField01",
+		a.b_course_field02 AS "bCourseField02",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.movement_ids AS "movementIds"
+	</sql>
+	
+	<sql id="courseJoins">
+	</sql>
+    
+	<select id="get" resultType="Course">
+		SELECT 
+			<include refid="courseColumns"/>
+		FROM b_course a
+		<include refid="courseJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Course">
+		SELECT 
+			<include refid="courseColumns"/>
+		FROM b_course a
+		<include refid="courseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="catalogId != null and catalogId != ''">
+				AND a.catalog_id = #{catalogId}
+			</if>
+			<if test="catalogName != null and catalogName != ''">
+				AND a.catalog_name  LIKE 
+					<if test="dbName == 'oracle'">'%'||#{catalogName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{catalogName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{catalogName},'%')</if>
+			</if>
+			<if test="gymId != null and gymId != ''">
+				AND a.gym_id = #{gymId}
+			</if>
+			<if test="recomendRage != null and recomendRage != ''">
+				AND a.recomend_rage = #{recomendRage}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="description != null and description != ''">
+				AND a.description = #{description}
+			</if>
+			<if test="duration != null and duration != ''">
+				AND a.duration = #{duration}
+			</if>
+			<if test="includeIds != null and includeIds.size()>0">
+				AND a.id IN
+				<foreach collection="includeIds" index="index" item="inId" open="(" close=")" separator=",">  
+		            #{inId}  
+		        </foreach>   
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Course">
+		SELECT 
+			<include refid="courseColumns"/>
+		FROM b_course a
+		<include refid="courseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_course(
+			id,
+			catalog_ids,
+			catalog_id,
+			catalog_name,
+			gym_id,
+			gym_img_url,
+			recomend_rage,
+			name,
+			description,
+			movement_num,
+			duration,
+			gym_name,
+			b_course_field01,
+			b_course_field02,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag,
+			movement_ids
+		) VALUES (
+			#{id},
+			#{catalogIds},
+			#{catalogId},
+			#{catalogName},
+			#{gymId},
+			#{gymImgUrl},
+			#{recomendRage},
+			#{name},
+			#{description},
+			#{movementNum},
+			#{duration},
+			#{gymName},
+			#{bCourseField01},
+			#{bCourseField02},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag},
+			#{movementIds}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_course SET 	
+			catalog_ids = #{catalogIds},
+			catalog_id = #{catalogId},
+			catalog_name = #{catalogName},
+			gym_id = #{gymId},
+			gym_img_url = #{gymImgUrl},
+			recomend_rage = #{recomendRage},
+			name = #{name},
+			description = #{description},
+			movement_num = #{movementNum},
+			duration = #{duration},
+			gym_name = #{gymName},
+			b_course_field01 = #{bCourseField01},
+			b_course_field02 = #{bCourseField02},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks},
+			movement_ids = #{movementIds}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_course SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

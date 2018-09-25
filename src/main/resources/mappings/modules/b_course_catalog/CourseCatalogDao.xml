@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_course_catalog.dao.CourseCatalogDao">
+    
+	<sql id="courseCatalogColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.parent_id AS "parentId",
+		a.parent_name AS "parentName",
+		a.level AS "level",
+		a.seq AS "seq",
+		a.is_show AS "isShow",
+		a.is_catalog AS "isCatalog",
+		a.b_course_catalog_field01 AS "bCourseCatalogField01",
+		a.b_course_catalog_field02 AS "bCourseCatalogField02",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="courseCatalogJoins">
+	</sql>
+    
+	<select id="get" resultType="CourseCatalog">
+		SELECT 
+			<include refid="courseCatalogColumns"/>
+		FROM b_course_catalog a
+		<include refid="courseCatalogJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CourseCatalog">
+		SELECT 
+			<include refid="courseCatalogColumns"/>
+		FROM b_course_catalog a
+		<include refid="courseCatalogJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="parentId != null and parentId != ''">
+				AND a.parent_id = #{parentId}
+			</if>
+			<if test="parentName != null and parentName != ''">
+				AND a.parent_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{parentName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{parentName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{parentName},'%')</if>
+			</if>
+			<if test="level != null and level != ''">
+				AND a.level = #{level}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CourseCatalog">
+		SELECT 
+			<include refid="courseCatalogColumns"/>
+		FROM b_course_catalog a
+		<include refid="courseCatalogJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_course_catalog(
+			id,
+			name,
+			parent_id,
+			parent_name,
+			level,
+			seq,
+			is_show,
+			is_catalog,
+			b_course_catalog_field01,
+			b_course_catalog_field02,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{name},
+			#{parentId},
+			#{parentName},
+			#{level},
+			#{seq},
+			#{isShow},
+			#{isCatalog},
+			#{bCourseCatalogField01},
+			#{bCourseCatalogField02},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_course_catalog SET 	
+			name = #{name},
+			parent_id = #{parentId},
+			parent_name = #{parentName},
+			level = #{level},
+			seq = #{seq},
+			is_show = #{isShow},
+			is_catalog = #{isCatalog},
+			b_course_catalog_field01 = #{bCourseCatalogField01},
+			b_course_catalog_field02 = #{bCourseCatalogField02},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_course_catalog SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

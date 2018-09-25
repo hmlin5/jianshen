@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_private_setting.dao.PrivateSettingDao">
+    
+	<sql id="privateSettingColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.message_person AS "messagePerson",
+		a.phone_public_level AS "phonePublicLevel",
+		a.messsage_order AS "messsageOrder",
+		a.message_course_tip AS "messageCourseTip",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="privateSettingJoins">
+	</sql>
+    
+	<select id="get" resultType="PrivateSetting">
+		SELECT 
+			<include refid="privateSettingColumns"/>
+		FROM b_private_setting a
+		<include refid="privateSettingJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getUserId" resultType="PrivateSetting">
+		SELECT 
+			<include refid="privateSettingColumns"/>
+		FROM b_private_setting a
+		<include refid="privateSettingJoins"/>
+		WHERE a.user_id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PrivateSetting">
+		SELECT 
+			<include refid="privateSettingColumns"/>
+		FROM b_private_setting a
+		<include refid="privateSettingJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="messagePerson != null and messagePerson != ''">
+				AND a.message_person = #{messagePerson}
+			</if>
+			<if test="phonePublicLevel != null and phonePublicLevel != ''">
+				AND a.phone_public_level = #{phonePublicLevel}
+			</if>
+			<if test="messsageOrder != null and messsageOrder != ''">
+				AND a.messsage_order = #{messsageOrder}
+			</if>
+			<if test="messageCourseTip != null and messageCourseTip != ''">
+				AND a.message_course_tip = #{messageCourseTip}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PrivateSetting">
+		SELECT 
+			<include refid="privateSettingColumns"/>
+		FROM b_private_setting a
+		<include refid="privateSettingJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="PrivateSetting">
+		INSERT INTO b_private_setting(
+			id,
+			user_id,
+			message_person,
+			phone_public_level,
+			messsage_order,
+			message_course_tip,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userId},
+			#{messagePerson},
+			#{phonePublicLevel},
+			#{messsageOrder},
+			#{messageCourseTip},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_private_setting SET 	
+			user_id = #{userId},
+			message_person = #{messagePerson},
+			phone_public_level = #{phonePublicLevel},
+			messsage_order = #{messsageOrder},
+			message_course_tip = #{messageCourseTip},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_private_setting SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

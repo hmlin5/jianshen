@@ -1,0 +1,116 @@
+.forum nav{ font-size: 18px; padding: 8px 15px; display: block;}
+.forum nav a{ display: inline-block; margin-right: 10px; line-height: 35px; text-align: center;}
+.new-share nav{ padding: 8px 10px;}
+.new-share nav a{ display: inline-block; width: inherit; padding:0 10px; line-height: 35px; text-align: center;}
+.forum .wFind30 a{ width: 20%; display: block; float: left; margin: 0; padding: 0; text-align: center; font-size: 17px;}
+
+
+.forum .forum-list{ margin-bottom: 15px;}
+.forum .forum-list .title{ font-size: 18px; color: #dc214c;}
+.forum .forum-list ul li{ margin-left: 15px; padding-top: 10px; padding-right: 15px; padding-bottom: 10px; border-top:1px #e6e6e6 solid; }
+.forum .forum-list ul li .name{ line-height: 25px; height: 50px; overflow: hidden;}
+.forum .forum-list ul li .icon{ font-size: 11px; color: #999999; position: relative; margin-top: 5px;}
+.forum .forum-list ul li .icon .comment{ display: block; position: absolute; right: 0; top: 0;}
+.forum .forum-list ul li .icon .comment i{ display: inline-block; width: 15px; height: 12px; position: relative; top: 1px; margin-left: 3px; background: url("../images/icon.png") -264px 2px no-repeat; background-size: 334px}
+.forum .forum-list ul li .icon .text .span1{ color: #dc214c;}
+.forum .forum-list ul li .icon .text .span2{ color: #444;}
+.forum .link-post{ height: 45px; background: #ffffff; text-align: center; line-height: 45px; font-size: 18px;}
+.forum .link-post a{color: #dc214c;}
+.forum .link-post a span{ font-size: 9px;}
+.forum .link-post a i{ display: inline-block; position: relative; top: 3px; width: 24px;height: 24px; background: url("../images/icon.png") -212px 3px no-repeat; background-size:252px ;}
+
+.information-subGage .information-list{ overflow: hidden;}
+.information-subGage .information-list ul{ margin-top: -1px;}
+.information-subGage-article .top h1{ font-size: 24px; font-weight: bold; line-height: 30px; }
+.information-subGage-article .top span{ display: block; margin: 10px 0; font-size: 12px; color: #999999; }
+.information-subGage-article .top span a{display: inline-block; margin-left: 20px;}
+.information-subGage-article .content{ margin: 10px 15px; padding-bottom: 30px; margin-top: 10px;}
+.information-subGage-article .content p{ line-height: 28px; text-indent: 2em; font-size: 18px; text-align: justify; }
+.post-comment-list .title{ line-height: 40px; color: #dc214c; font-size: 18px;}
+.post-comment-list .reply-group form{ display: block;}
+.post-comment-list .reply-group form textarea{ display: block; width: 96%; padding: 2%; background: #f9f9f9; font-size: 16px; border: 1px #e6e6e6 solid; height: 100px;border-radius: 6px;}
+.post-comment-list .reply-group .form-btn{ height: 35px; margin-top: 15px; position: relative;}
+.post-comment-list .reply-group .form-btn .submit{ display: block; width: 80px; height: 35px; line-height: 35px; font-size: 14px; text-align: center; background: #dc214c; border: none; color: #ffffff; position: absolute; top: 0; right: 0; border-radius: 6px;}
+.post-comment-list ul{ margin-top: 0px;}
+.post-comment-list ul li{ border-top: 1px #e6e6e6 solid; position: relative; margin-top: 10px; padding-top: 10px;}
+.post-comment-list ul li .pic{ position: absolute; width: 50px; height: 50px;}
+.post-comment-list ul li .pic img{width: 50px;}
+.post-comment-list ul li .text{ margin-left: 60px;}
+.post-comment-list ul li .text .time{ font-size: 12px; color: #999; margin-top: 12px; margin-bottom: 10px;}
+.post-comment-list ul li .text .comment-info{ font-size: 14px; color: #666; line-height: 24px;}
+.post-comment-list .page-btn{ background: #e6e6e6; font-size: 12px; color: #666; border-radius: 6px; margin: 20px 0; line-height: 25px; text-align: center;}
+
+.write-post-box form{ display: block; width: 100%;}
+.write-post-box form p{ line-height: 35px; margin-bottom: 15px;}
+.write-post-box form p .input input{ width: 75%; height: 30px; border: 1px #e6e6e6 solid; padding: 0 10px;}
+.write-post-box form p .input select{ width: 40%; height: 30px; padding: 0 10px; font-size: 16px;}
+.write-post-box form p .input textarea{ width: 75%;height: 280px; border: 1px #e6e6e6 solid;  padding: 10px; font-size: 16px;}
+.write-post-box form .img input{  float: right;}
+.write-post-box .form-btn{ margin: 50px 0; padding-bottom: 20px;}
+.write-post-box .form-btn p{ width: 90px; height: 40px; margin-right: 30px; border-radius: 6px; float: right; background: #dc214c; line-height: 40px; text-align: center; font-size: 16px; color: #ffffff;}
+@media screen and (max-width: 383px) {
+    .write-post-box form p .input textarea{ width: 71%;}
+    .write-post-box form p .input input{ width: 71%;}
+
+}
+
+
+.maskBox{ display: block;}
+.buy-slide{ height: 100%; display: none;}
+.buy-slide .floor{ height:25%; width: 100%; position: absolute; bottom: 50%; background: #ffffff; z-index: 10; overflow: auto;}
+.buy-slide .floor .inner .close-btn{ width: 24px; height: 24px; position: absolute; right: 15px; top: 15px; background: url("../images/icon.png") -57px -117px no-repeat #ffffff; z-index: 9998; }
+.buy-slide .floor .inner .name{ line-height: 25px; width: 75%;}
+.buy-slide .floor .inner form{  margin-top: 20px; display: block; }
+.buy-slide .floor .inner form .row{ height:35px; margin-bottom: 10px; position: relative; }
+.buy-slide .floor .inner form .row .sp1{ display: block; width: 90px; line-height: 35px; position: absolute; left: 0; top: 0;}
+.buy-slide .floor .inner form .row .sp2{ display: block; height: 35px; margin-left: 90px; border: 1px #e6e6e6 solid; padding-left: 10px;}
+.buy-slide .floor .inner form .row .sp2 input, textarea{ width: 96%; height: 96%; font-size: 14px;border: none; background: none;}
+textarea{  padding: 2%; }
+.buy-slide .floor .inner .submit{ height: 45px; line-height: 45px; text-align: center; font-size: 18px; color: #ffffff; background: #dc214c;}
+
+
+
+
+.information nav{ font-size: 18px; padding: 8px 15px; display: block;}
+.information nav a{ display: inline-block; margin-right: 10px; line-height: 35px; text-align: center;}
+.information .information-list .title{ font-size: 18px; color: #dc214c;}
+.information .information-list ul li{ margin-left: 15px; padding-top: 10px; padding-right: 15px; margin-bottom: 10px; border-top:1px #e6e6e6 solid; }
+.information .information-list ul li .name{ line-height: 25px; height: 50px; overflow: hidden;}
+.information .information-list ul li .icon{ font-size: 11px; color: #999999; position: relative;}
+.information .information-list ul li .icon .comment{ display: inline-block; margin-left: 20px;}
+.information .information-list ul li .icon .comment i{ display: inline-block; width: 15px; height: 12px; position: relative; top: 1px; margin-left: 3px; background: url("../images/icon.png") -264px 2px no-repeat; background-size: 334px}
+.information .information-list ul li .icon .time{ position: absolute; right: 0; bottom: 0;}
+.information .wFind30 a{ width: 30%; display: block; float: left; margin: 0; padding: 0; text-align: center; font-size: 17px;}
+
+.information .link-post{ height: 45px; background: #ffffff; text-align: center; line-height: 45px; font-size: 18px;}
+.information .link-post a{color: #dc214c;}
+.information .link-post a span{ font-size: 9px;}
+.information .link-post a i{ display: inline-block; position: relative; top: 3px; width: 24px;height: 24px; background: url("../images/icon.png") -212px 3px no-repeat; background-size:252px ;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.sys.dao.SysConfigDao">
+    
+	<sql id="sysConfigColumns">
+		a.id AS "id",
+		a.prokey AS "prokey",
+		a.provalue AS "provalue",
+		a.mark AS "mark",
+		a.sign AS "sign",
+		a.flag AS "flag",
+		a.remark AS "remark",
+		a.starttime AS "starttime",
+		a.endtime AS "endtime",
+		a.update_time AS "updateTime"
+	</sql>
+	
+	<sql id="sysConfigJoins">
+	</sql>
+    
+	<select id="get" resultType="SysConfig">
+		SELECT 
+			<include refid="sysConfigColumns"/>
+		FROM sys_config a
+		<include refid="sysConfigJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="SysConfig">
+		SELECT 
+			<include refid="sysConfigColumns"/>
+		FROM sys_config a
+		<include refid="sysConfigJoins"/>
+		<where>
+			
+			<if test="prokey != null and prokey != ''">
+				AND a.prokey = #{prokey}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SysConfig">
+		SELECT 
+			<include refid="sysConfigColumns"/>
+		FROM sys_config a
+		<include refid="sysConfigJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_config(
+			id,
+			prokey,
+			provalue,
+			mark,
+			sign,
+			flag,
+			remark,
+			starttime,
+			endtime
+		) VALUES (
+			#{id},
+			#{prokey},
+			#{provalue},
+			#{mark},
+			#{sign},
+			#{flag},
+			#{remark},
+			#{starttime},
+			#{endtime}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_config SET 	
+			prokey = #{prokey},
+			provalue = #{provalue},
+			mark = #{mark},
+			sign = #{sign},
+			flag = #{flag},
+			remark = #{remark},
+			starttime = #{starttime},
+			endtime = #{endtime}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM sys_config
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

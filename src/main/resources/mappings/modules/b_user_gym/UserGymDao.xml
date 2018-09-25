@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_user_gym.dao.UserGymDao">
+    
+	<sql id="userGymColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.gym_id AS "gymId",
+		a.relation AS "relation",
+		a.course_time AS "courseTime",
+		a.card_start_date AS "cardStartDate",
+		a.card_end_date AS "cardEndDate",
+		a.bind_flag AS "bindFlag",
+		a.user_height AS "userHeight",
+		a.user_weight AS "userWeight",
+		a.coach_id AS "coachId",
+		a.persist_flag AS "persistFlag",
+		a.unbind_time AS "unbindTime",
+		a.freeze_flag AS "freezeFlag",
+		a.user_name AS "userName",
+		a.user_sex AS "userSex",
+		a.user_birth_date AS "userBirthDate",
+		a.user_on_boarding_time AS "userOnBoardingTime",
+		a.input_time AS "inputTime",
+		a.coach_label AS "coachLabel",
+		a.course_recommend_flag AS "courseRecommendFlag",
+		a.commission_ratio AS "commissionRatio",
+		a.rest_number As "restNumber",
+		a.unit_price As "unitPrice",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="joinAppUserColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.gym_id AS "gymId",
+		a.relation AS "relation",
+		a.course_time AS "courseTime",
+		a.card_start_date AS "cardStartDate",
+		a.card_end_date AS "cardEndDate",
+		a.bind_flag AS "bindFlag",
+		a.user_height AS "userHeight",
+		a.user_weight AS "userWeight",
+		a.coach_id AS "coachId",
+		a.persist_flag AS "persistFlag",
+		a.unbind_time AS "unbindTime",
+		a.freeze_flag AS "freezeFlag",
+		a.user_name AS "userName",
+		a.user_sex AS "userSex",
+		a.user_birth_date AS "userBirthDate",
+		a.user_on_boarding_time AS "userOnBoardingTime",
+		a.input_time AS "inputTime",
+		a.coach_label AS "coachLabel",
+		a.course_recommend_flag AS "courseRecommendFlag",
+		a.commission_ratio AS "commissionRatio",
+		b.phone AS "userPhone",
+		b.head_img_url AS "userHeadImgUrl",
+		b.login_time AS "userLoginTime",
+		a.rest_number As "rest_number",
+		a.unit_price As "unitPrice",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="findInbody">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.gym_id AS "gymId",
+		a.relation AS "relation",
+		a.course_time AS "courseTime",
+		a.card_start_date AS "cardStartDate",
+		a.card_end_date AS "cardEndDate",
+		a.bind_flag AS "bindFlag",
+		a.user_height AS "userHeight",
+		a.user_weight AS "userWeight",
+		a.coach_id AS "coachId",
+		a.persist_flag AS "persistFlag",
+		a.unbind_time AS "unbindTime",
+		a.freeze_flag AS "freezeFlag",
+		a.user_name AS "userName",
+		a.user_sex AS "userSex",
+		a.user_birth_date AS "userBirthDate",
+		a.user_on_boarding_time AS "userOnBoardingTime",
+		a.input_time AS "inputTime",
+		a.coach_label AS "coachLabel",
+		a.course_recommend_flag AS "courseRecommendFlag",
+		
+		b.weight AS "weight",
+		b.bmi_index AS "bmiIndex",
+		b.skeletal_muscle AS "skeletalMuscle",
+		b.body_fat_rate AS "bodyFatRate",
+		b.body_fat AS "bodyFat",
+		b.whr AS "whr",
+		b.basal_metabolism AS "basalMetabolism",
+		b.muscle_control AS "muscleControl",
+		b.fat_control AS "fatControl",
+		b.visceral_adipose_grade AS "visceralAdiposeGrade",
+		b.health_assessment_score AS "healthAssessmentScore",
+		b.pelvic_stability AS "pelvicStability",
+		b.core_activation AS "coreActivation",
+		b.respiratory_reconstruction AS "respiratoryReconstruction",
+		b.create_date AS "testTime",
+		a.commission_ratio AS "commissionRatio",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	
+	<sql id="JoinInbody">
+		 LEFT JOIN b_app_user b ON a.user_id = b.user_id
+	</sql>
+	
+	
+	<sql id="userGymJoins">
+		 
+	</sql>
+    
+    <sql id="JoinAppUser">
+		 LEFT JOIN b_app_user b ON a.user_id = b.id
+	</sql>
+    
+	<select id="get" resultType="UserGym">
+		SELECT 
+			<include refid="joinAppUserColumns"/>
+		FROM b_user_gym a
+		<include refid="JoinAppUser"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	
+	
+	<select id="findGymUser" resultType="UserGym">
+		SELECT 
+			<include refid="findInbody"/>
+		FROM b_user_gym a
+		<include refid="JoinInbody"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	
+	<select id="findList" resultType="UserGym">
+		SELECT 
+			<include refid="userGymColumns"/>
+		FROM b_user_gym a
+		<include refid="userGymJoins"/>
+		
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="coachId != null and coachId != ''">
+				AND a.coach_id = #{coachId}
+			</if>
+			<if test="gymId != null and gymId != ''">
+				AND a.gym_id = #{gymId}
+			</if>
+			<if test="relation != null and relation != ''">
+				AND a.relation = #{relation}
+			</if>
+			<if test="bindFlag != null and bindFlag != ''">
+				AND a.bind_flag = #{bindFlag}
+			</if>
+			<if test="beginCourseTime != null and endCourseTime != null and beginCourseTime != '' and endCourseTime != ''">
+				AND a.course_time BETWEEN #{beginCourseTime} AND #{endCourseTime}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="findGymUserList" resultType="UserGym">
+		SELECT 
+			<include refid="joinAppUserColumns"/>
+		FROM b_user_gym a
+		<include refid="JoinAppUser"/>
+		
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="gymId != null and gymId != ''">
+				AND a.gym_id = #{gymId}
+			</if>
+			<if test="relation != null and relation != ''">
+				AND a.relation = #{relation}
+			</if>
+			<if test="relation != null and relation != ''">
+				AND a.relation = #{relation}
+			</if>
+			<if test="bindFlag != null and bindFlag != ''">
+				AND a.bind_flag = #{bindFlag}
+			</if>
+			<if test="beginCourseTime != null and endCourseTime != null and beginCourseTime != '' and endCourseTime != ''">
+				AND a.course_time BETWEEN #{beginCourseTime} AND #{endCourseTime}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	
+	<select id="findAllList" resultType="UserGym">
+		SELECT 
+			<include refid="userGymColumns"/>
+		FROM b_user_gym a
+		<include refid="userGymJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_user_gym(
+			id,
+			user_id,
+			gym_id,
+			relation,
+			course_time,
+			card_start_date,
+			card_end_date,
+			bind_flag,
+			user_height,
+			user_weight,
+			coach_id,
+			persist_flag,
+			unbind_time,
+			freeze_flag,
+			user_name,
+			user_sex,
+			user_birth_date,
+			user_on_boarding_time,
+			input_time,
+			coach_label,
+			course_recommend_flag,
+			commission_ratio,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag,
+			rest_number,
+			unit_price
+		) VALUES (
+			#{id},
+			#{userId},
+			#{gymId},
+			#{relation},
+			#{courseTime},
+			#{cardStartDate},
+			#{cardEndDate},
+			#{bindFlag},
+			#{userHeight},
+			#{userWeight},
+			#{coachId},
+			#{persistFlag},
+			#{unbindTime},
+			#{freezeFlag},
+			#{userName},
+			#{userSex},
+			#{userBirthDate},
+			#{userOnBoardingTime},
+			#{inputTime},
+			#{coachLabel},
+			#{courseRecommendFlag},
+			#{commissionRatio},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag},
+			#{restNumber},
+			#{unitPrice}
+		)
+	</insert>
+	
+	<update id="updateInbodyUser" parameterType="com.gimc.user.modules.b_user_gym.entity.UserGym">
+		UPDATE b_user_gym a,b_user_inbody b SET 	
+			a.user_id = #{userId},
+			a.gym_id = #{gymId},
+			a.relation = #{relation},
+			a.course_time = #{courseTime},
+			a.card_start_date = #{cardStartDate},
+			a.card_end_date = #{cardEndDate},
+			a.bind_flag = #{bindFlag},
+			a.user_height = #{userHeight},
+			a.user_weight = #{userWeight},
+			a.coach_id = #{coachId},
+			a.persist_flag = #{persistFlag},
+			a.unbind_time = #{unbindTime},
+			a.freeze_flag = #{freezeFlag},
+			a.user_name = #{userName},
+			a.user_sex = #{userSex},
+			a.user_birth_date = #{userBirthDate},
+			a.user_on_boarding_time = #{userOnBoardingTime},
+			a.input_time = #{inputTime},
+			a.coach_label = #{coachLabel},
+			a.course_recommend_flag = #{courseRecommendFlag},
+			
+
+			b.bmi_index = #{userInbody.bmiIndex},
+			b.skeletal_muscle = #{userInbody.skeletalMuscle},
+			b.body_fat_rate = #{userInbody.bodyFatRate},
+			b.body_fat = #{userInbody.bodyFat},
+			b.whr = #{userInbody.whr},
+			b.basal_metabolism = #{userInbody.basalMetabolism},
+			b.muscle_control = #{userInbody.muscleControl},
+			b.fat_control = #{userInbody.fatControl},
+			b.visceral_adipose_grade = #{userInbody.visceralAdiposeGrade},
+			b.health_assessment_score = #{userInbody.healthAssessmentScore},
+			b.pelvic_stability = #{userInbody.pelvicStability},
+			b.core_activation = #{userInbody.coreActivation},
+			b.respiratory_reconstruction = #{userInbody.respiratoryReconstruction},
+		
+			a.update_date = #{update_date},
+			a.update_by = #{update_by},
+			a.remarks = #{remarks}
+		WHERE a.id=#{id} and b.id=#{id}
+	</update>
+	
+	<update id="update">
+		UPDATE b_user_gym SET 	
+			user_id = #{userId},
+			gym_id = #{gymId},
+			relation = #{relation},
+			course_time = #{courseTime},
+			card_start_date = #{cardStartDate},
+			card_end_date = #{cardEndDate},
+			bind_flag = #{bindFlag},
+			user_height = #{userHeight},
+			user_weight = #{userWeight},
+			coach_id = #{coachId},
+			persist_flag = #{persistFlag},
+			unbind_time = #{unbindTime},
+			freeze_flag = #{freezeFlag},
+			user_name = #{userName},
+			user_sex = #{userSex},
+			user_birth_date = #{userBirthDate},
+			user_on_boarding_time = #{userOnBoardingTime},
+			input_time = #{inputTime},
+			coach_label = #{coachLabel},
+			course_recommend_flag = #{courseRecommendFlag},
+			commission_ratio = #{commissionRatio},
+			
+			
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks},
+			rest_number = #{restNumber},
+			unit_price = #{unitPrice}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_user_gym SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	
+	
+</mapper>

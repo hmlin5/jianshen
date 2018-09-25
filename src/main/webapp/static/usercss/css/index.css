@@ -1,0 +1,313 @@
+/*重置登陆页背景*/
+.container-fluid.login-page{
+    height: 100%;
+    background: url(../images/bg.jpg) repeat;
+}
+body{
+    overflow-y: auto;
+
+
+
+}
+
+
+/*S顶部导航样式*/
+.nav-top {
+    position: fixed;
+    top:0;
+    z-index: 1;
+    width: 100%;
+    height: 90px;
+    line-height: 90px;
+    /*background:linear-gradient(90deg,#1e91e7,#0b0d75);*/
+    background: #fff;
+    border-bottom: 2px solid #ddd;
+}
+.nav-top-content{
+    width: 1250px;
+    margin: 0 auto;
+    height: 100%;
+}
+.logo{
+    float: left;
+    width: 300px;
+    margin-left: 5px;
+    margin-top: 28px;
+}
+.slider-indicators{
+    height: 45px;
+    padding-left: 60px;
+}
+.slider-indicators ul li a{
+    display: inline-block;
+    height: 67px;
+    line-height: 67px;
+    padding: 0 25px;
+    font-size: 18px;
+    color: #fff;
+}
+.indicators-item-selected{
+    color: #fff;
+    border-bottom: 3px solid #fff;
+}
+
+.nav-port ul li{
+    display: inline-block;
+    height: 90px;
+    line-height: 90px;
+}
+.nav-port ul li a{
+    color: #000;
+}
+.nav-port ul li.nav-login a{
+    text-decoration: none;
+    padding: 1px 0;
+    border-right: 1px solid #fff;
+}
+
+.main{
+    width: 100%;
+    margin-top: 70px;
+    /*border: 2px solid #000;*/
+}
+/*E顶部导航样式*/
+/*侧边栏*/
+#left{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    top:70px;
+    width: 210px;
+    min-height:400px;
+    /*border: 1px solid #000;*/
+    background: #fff;
+}
+.sidebar{
+    height: 100%;
+    font-size: 18px;
+}
+.sidebar-item a{
+    display: inherit;
+    height: 60px;
+    line-height: 60px;
+}
+.item-tag{
+    margin-top: 16px;
+    float: left;
+    margin-right: 16px;
+    margin-left: 26px;
+}
+.subnav-item a{
+    padding-left: 65px;
+    color: #666;
+}
+.active{
+    background:url(../images/right.png) #eee no-repeat;
+}
+.arrow-down{
+    width: 30px;
+    height: 10px;
+    background: url(../images/iconlist.png) no-repeat 5px -192px;
+    display: inline-block;
+}
+.arrow-up{
+    width: 30px;
+    height: 10px;
+    display: inline-block;
+    background: url(../images/iconlist.png) no-repeat 5px -221px;
+}
+/*主体内容*/
+#right{
+    float: left;
+    width: 100%;
+    min-height: 400px;
+    /*border: 1px solid #000;*/
+}
+.console-content{
+    box-sizing: border-box;
+    padding-right: 20px;
+    border-bottom: 1px solid #ccc;
+    box-shadow: 1px 1px 3px #ccc;
+    color: #263548;
+    margin-left: 210px;
+}
+.content-header{
+    width: 100%;
+    height: 60px;
+    box-sizing: border-box;
+    padding-right: 20px;
+    background-color: #fff;
+    color: #263548;
+}
+.content-main{
+    width: 100%;
+    box-sizing: border-box;
+    color: #263548;
+}
+.content-main-item{
+    margin: 14px 0 14px 14px;
+    border-radius: 5px;
+    background: #fff;
+}
+.content-main-header{
+    padding: 22px 0;
+}
+.overview-content-header{
+    margin-left: 20px;
+}
+.visit{
+    padding-bottom: 0;
+}
+input.timerange{
+    height: 30px;
+    outline: none;
+    border: 1px solid #ddd;
+    margin: 12px 0;
+    width: 225px;
+    padding: 5px;
+    border-radius: 3px;
+}
+.timebox{
+    position: relative;
+}
+.triangledown{
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #ddd;
+    position: absolute;
+    top:22px;
+    right: 3px;
+}
+.selectbox{
+    width: 225px;
+    padding: 10px 5px;
+    background: #eee;
+    border-radius: 3px;
+    position: absolute;
+    top:42px;
+}
+.selectbox ul li{
+    padding: 5px;
+}
+.selectbox ul li:hover{
+    background: #ddd;
+}
+.overview-content-header>.title{
+    height: 60px;
+    line-height: 60px;
+    font-family: 'Microsoft YaHei';
+    font-size: 18px;
+}
+.content-main-header{
+    margin: 0 10px ;
+}
+.chart{
+    margin-bottom: 30px;
+}
+.allcount{
+    border-bottom: 1px solid #eee;
+}
+.content-main-header>.title{
+    font-family: 'Microsoft YaHei';
+    padding: 22px 10px;
+    /*border-left: 4px solid #1e91e7;*/
+    font-size: 18px;
+    color:#1e91e7;
+}
+.download{
+    padding-right: 20px;
+}
+.list{
+    margin: 10px 0 0 0;
+}
+.list ul li {
+    position: relative;
+    box-sizing: border-box;
+    width: 24%;
+    min-height: 60px;
+    padding-top: 10px;
+    border-left: 1px solid #ccc;
+    margin-bottom:10px;
+}
+.list ul li:first-child{
+    border: none;
+}
+.list ul li a{
+    padding: 0 20px;
+    font-size:16px;
+}
+.list ul li span.count{
+    display: block;
+    padding: 0 0 17px 20px;
+    font-family: 'Microsoft YaHei';
+    font-size: 40px;
+}
+.list ul li span.title{
+    font-family: 'Microsoft YaHei';
+    color:#b8b8b8;
+    font-size: 16px;
+}
+.download-data{
+    font-family: 'Microsoft YaHei';
+    font-size: 18px;
+    color:#1e91e7;
+}
+
+/*表格样式*/
+.table{
+    margin-bottom: 30px;
+}
+table th,table td{
+    height: 48px;
+    font-size: 14px;
+}
+.table > thead > tr > th {
+     vertical-align: middle;
+     border-bottom: 1px solid #ddd;
+ }
+.table > tbody > tr > td {
+    vertical-align: middle;
+}
+.table > thead > tr > th.paddingleft30{
+    padding-left: 30px;
+}
+.table > tbody > tr > td.paddingleft35{
+    padding-left: 35px;
+}
+.table>tbody>tr{
+    border-bottom: 1px solid #ddd;
+}
+.table th{
+    background:#f5f9fc;
+    font-weight: normal;
+}
+.arrows{
+    position: relative;
+    margin-left: 3px;
+}
+.tabarrowup{
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #ddd;
+    position: absolute;
+    top:5px;
+}
+.tabarrowdown{
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #ddd;
+    position: absolute;
+    top:13px;
+}
+.hide{
+    display: none;
+}
+.block{
+    display: block;
+}

@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_user_course.dao.UserCourseDao">
+    
+	<sql id="userCourseColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.coach_id AS "coachId",
+		a.course_id AS "courseId",
+		a.seq AS "seq",
+		a.finish_flag AS "finishFlag",
+		a.gym_id AS "gymId",
+		a.catalog_id AS "catalogId",
+		a.catalog_name AS "catalogName",
+		a.gym_img_url AS "gymImgUrl",
+		a.recomend_rage AS "recomendRage",
+		a.name AS "name",
+		a.description AS "description",
+		a.movement_num AS "movementNum",
+		a.duration AS "duration",
+		a.gym_name AS "gymName",
+		a.movement_ids AS "movementIds",
+		a.recommend_age AS "recommendAge",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="userCourseJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="UserCourse">
+		SELECT 
+			<include refid="userCourseColumns"/>
+		FROM b_user_course a
+		<include refid="userCourseJoins"/>
+		WHERE a.id = #{id} 
+	</select>
+	
+	<select id="findList" resultType="UserCourse">
+		SELECT 
+			<include refid="userCourseColumns"/>
+		FROM b_user_course a
+		<include refid="userCourseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="coachId != null and coachId != ''">
+				AND a.coach_id = #{coachId}
+			</if>
+			<if test="courseId != null and courseId != ''">
+				AND a.course_id = #{courseId}
+			</if>
+			<if test="seq != null and seq != ''">
+				AND a.seq = #{seq}
+			</if>
+			<if test="finishFlag != null and finishFlag != ''">
+				AND a.finish_flag = #{finishFlag}
+			</if>
+			<if test="gymId != null and gymId != ''">
+				AND a.gym_id = #{gymId}
+			</if>
+			<if test="catalogId != null and catalogId != ''">
+				AND a.catalog_id = #{catalogId}
+			</if>
+			<if test="catalogName != null and catalogName != ''">
+				AND a.catalog_name = #{catalogName}
+			</if>
+			<if test="gymImgUrl != null and gymImgUrl != ''">
+				AND a.gym_img_url = #{gymImgUrl}
+			</if>
+			<if test="recomendRage != null and recomendRage != ''">
+				AND a.recomend_rage = #{recomendRage}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="description != null and description != ''">
+				AND a.description LIKE 
+					<if test="dbName == 'oracle'">'%'||#{description}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{description}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{description},'%')</if>
+			</if>
+			<if test="movementNum != null and movementNum != ''">
+				AND a.movement_num = #{movementNum}
+			</if>
+			<if test="duration != null and duration != ''">
+				AND a.duration = #{duration}
+			</if>
+			<if test="gymName != null and gymName != ''">
+				AND a.gym_name = #{gymName}
+			</if>
+			<if test="movementIds != null and movementIds != ''">
+				AND a.movement_ids = #{movementIds}
+			</if>
+			<if test="includeUserIds != null and includeUserIds.size()>0">
+				AND a.user_id IN
+				<foreach collection="includeUserIds" index="index" item="inId" open="(" close=")" separator=",">  
+		            #{inId}  
+		        </foreach>   
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+
+	
+	<select id="findDistinctList" resultType="String">
+		SELECT 
+			distinct (
+						a.course_id
+					)
+		FROM b_user_course a
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="coachId != null and coachId != ''">
+				AND a.coach_id = #{coachId}
+			</if>
+			<if test="courseId != null and courseId != ''">
+				AND a.course_id = #{courseId}
+			</if>
+			<if test="seq != null and seq != ''">
+				AND a.seq = #{seq}
+			</if>
+			<if test="finishFlag != null and finishFlag != ''">
+				AND a.finish_flag = #{finishFlag}
+			</if>
+			<if test="gymId != null and gymId != ''">
+				AND a.gym_id = #{gymId}
+			</if>
+			<if test="catalogId != null and catalogId != ''">
+				AND a.catalog_id = #{catalogId}
+			</if>
+			<if test="catalogName != null and catalogName != ''">
+				AND a.catalog_name = #{catalogName}
+			</if>
+			<if test="gymImgUrl != null and gymImgUrl != ''">
+				AND a.gym_img_url = #{gymImgUrl}
+			</if>
+			<if test="recomendRage != null and recomendRage != ''">
+				AND a.recomend_rage = #{recomendRage}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="description != null and description != ''">
+				AND a.description LIKE 
+					<if test="dbName == 'oracle'">'%'||#{description}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{description}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{description},'%')</if>
+			</if>
+			<if test="movementNum != null and movementNum != ''">
+				AND a.movement_num = #{movementNum}
+			</if>
+			<if test="duration != null and duration != ''">
+				AND a.duration = #{duration}
+			</if>
+			<if test="gymName != null and gymName != ''">
+				AND a.gym_name = #{gymName}
+			</if>
+			<if test="movementIds != null and movementIds != ''">
+				AND a.movement_ids = #{movementIds}
+			</if>
+			<if test="includeUserIds != null and includeUserIds.size()>0">
+				AND a.user_id IN
+				<foreach collection="includeUserIds" index="index" item="id" open="(" close=")" separator=",">  
+		            #{id}  
+		        </foreach>   
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	
+	
+	
+	<select id="findAllList" resultType="UserCourse">
+		SELECT 
+			<include refid="userCourseColumns"/>
+		FROM b_user_course a
+		<include refid="userCourseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_user_course(
+			id,
+			user_id,
+			coach_id,
+			course_id,
+			seq,
+			finish_flag,
+			gym_id,
+			catalog_id,
+			catalog_name,
+			gym_img_url,
+			recomend_rage,
+			name,
+			description,
+			movement_num,
+			duration,
+			gym_name,
+			movement_ids,
+			recommend_age,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userId},
+			#{coachId},
+			#{courseId},
+			#{seq},
+			#{finishFlag},
+			#{gymId},
+			#{catalogId},
+			#{catalogName},
+			#{gymImgUrl},
+			#{recomendRage},
+			#{name},
+			#{description},
+			#{movementNum},
+			#{duration},
+			#{gymName},
+			#{movementIds},
+			#{recommendAge},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_user_course SET 	
+			user_id = #{userId},
+			coach_id = #{coachId},
+			course_id = #{courseId},
+			seq = #{seq},
+			finish_flag = #{finishFlag},
+			gym_id = #{gymId},
+			catalog_id = #{catalogId},
+			catalog_name = #{catalogName},
+			gym_img_url = #{gymImgUrl},
+			recomend_rage = #{recomendRage},
+			name = #{name},
+			description = #{description},
+			movement_num = #{movementNum},
+			duration = #{duration},
+			gym_name = #{gymName},
+			movement_ids = #{movementIds},
+			recommend_age = #{recommendAge},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_user_course SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateFinsh">
+	    update b_user_course set finish_flag=#{finishFlag} where user_id=#{userId} and name=#{name} and gym_id=#{gymId}
+	</update>
+	
+	
+	<update id="deleteUserCourses">
+		UPDATE b_user_course SET 
+			del_flag = 1
+		WHERE
+			del_flag = #{DEL_FLAG_NORMAL}
+				AND user_id = #{userId}
+				AND gym_id = #{gymId}
+	</update>
+	
+	
+</mapper>

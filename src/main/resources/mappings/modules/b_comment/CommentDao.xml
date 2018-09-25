@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_comment.dao.CommentDao">
+    
+	<sql id="commentColumns">
+		a.id AS "id",
+		a.order_id AS "orderId",
+		a.stu_id AS "stuId",
+		a.stu_name AS "stuName",
+		a.comment_time AS "commentTime",
+		a.coach_id AS "coachId",
+		a.coach_name AS "coachName",
+		a.reply_time AS "replyTime",
+		a.content AS "content",
+		a.label AS "label",
+		a.reply AS "reply",
+		a.major AS "major",
+		a.service AS "service",
+		a.total AS "total",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="joinAppUserColumns">
+		a.id AS "id",
+		a.order_id AS "orderId",
+		a.stu_id AS "stuId",
+		a.stu_name AS "stuName",
+		a.comment_time AS "commentTime",
+		a.coach_id AS "coachId",
+		a.coach_name AS "coachName",
+		a.reply_time AS "replyTime",
+		a.content AS "content",
+		a.label AS "label",
+		a.reply AS "reply",
+		a.major AS "major",
+		a.service AS "service",
+		a.total AS "total",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		
+		u.sex AS 'sex',
+		u.head_img_url AS 'headImgUrl'
+		
+	</sql>
+	
+	
+	
+	<sql id="commentJoins">
+	</sql>
+    
+    
+    
+    
+	<sql id="joinAppUser">
+		LEFT JOIN b_app_user u ON a.stu_id = u.id 
+	</sql>
+    
+    
+	<select id="get" resultType="Comment">
+		SELECT 
+			<include refid="commentColumns"/>
+		FROM b_comment a
+		<include refid="commentJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	
+	
+	<select id="findList" resultType="Comment">
+		SELECT 
+			<include refid="commentColumns"/>
+		FROM b_comment a
+		<include refid="commentJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orderId != null and orderId != ''">
+				AND a.order_id = #{orderId}
+			</if>
+			<if test="stuId != null and stuId != ''">
+				AND a.stu_id = #{stuId}
+			</if>
+			<if test="stuName != null and stuName != ''">
+				AND a.stu_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{stuName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{stuName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{stuName},'%')</if>
+			</if>
+			<if test="beginCommentTime != null and endCommentTime != null and beginCommentTime != '' and endCommentTime != ''">
+				AND a.comment_time BETWEEN #{beginCommentTime} AND #{endCommentTime}
+			</if>
+			<if test="coachId != null and coachId != ''">
+				AND a.coach_id = #{coachId}
+			</if>
+			<if test="coachName != null and coachName != ''">
+				AND a.coach_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{coachName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{coachName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{coachName},'%')</if>
+			</if>
+			<if test="beginReplyTime != null and endReplyTime != null and beginReplyTime != '' and endReplyTime != ''">
+				AND a.reply_time BETWEEN #{beginReplyTime} AND #{endReplyTime}
+			</if>
+			<if test="major != null and major != ''">
+				AND a.major = #{major}
+			</if>
+			<if test="service != null and service != ''">
+				AND a.service = #{service}
+			</if>
+			<if test="total != null and total != ''">
+				AND a.total = #{total}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="findCoachCommentList" resultType="Comment">
+		SELECT 
+			<include refid="joinAppUserColumns"/>
+		FROM b_comment a
+		<include refid="joinAppUser"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orderId != null and orderId != ''">
+				AND a.order_id = #{orderId}
+			</if>
+			<if test="stuId != null and stuId != ''">
+				AND a.stu_id = #{stuId}
+			</if>
+			<if test="stuName != null and stuName != ''">
+				AND a.stu_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{stuName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{stuName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{stuName},'%')</if>
+			</if>
+			<if test="beginCommentTime != null and endCommentTime != null and beginCommentTime != '' and endCommentTime != ''">
+				AND a.comment_time BETWEEN #{beginCommentTime} AND #{endCommentTime}
+			</if>
+			<if test="coachId != null and coachId != ''">
+				AND a.coach_id = #{coachId}
+			</if>
+			<if test="coachName != null and coachName != ''">
+				AND a.coach_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{coachName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{coachName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{coachName},'%')</if>
+			</if>
+			<if test="beginReplyTime != null and endReplyTime != null and beginReplyTime != '' and endReplyTime != ''">
+				AND a.reply_time BETWEEN #{beginReplyTime} AND #{endReplyTime}
+			</if>
+			<if test="major != null and major != ''">
+				AND a.major = #{major}
+			</if>
+			<if test="service != null and service != ''">
+				AND a.service = #{service}
+			</if>
+			<if test="total != null and total != ''">
+				AND a.total = #{total}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	
+	<select id="findAllList" resultType="Comment">
+		SELECT 
+			<include refid="commentColumns"/>
+		FROM b_comment a
+		<include refid="commentJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="Comment">
+		INSERT INTO b_comment(
+			id,
+			order_id,
+			stu_id,
+			stu_name,
+			comment_time,
+			coach_id,
+			coach_name,
+			reply_time,
+			content,
+			label,
+			reply,
+			major,
+			service,
+			total,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{orderId},
+			#{stuId},
+			#{stuName},
+			#{commentTime},
+			#{coachId},
+			#{coachName},
+			#{replyTime},
+			#{content},
+			#{label},
+			#{reply},
+			#{major},
+			#{service},
+			#{total},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_comment SET 	
+			order_id = #{orderId},
+			stu_id = #{stuId},
+			stu_name = #{stuName},
+			comment_time = #{commentTime},
+			coach_id = #{coachId},
+			coach_name = #{coachName},
+			reply_time = #{replyTime},
+			content = #{content},
+			label = #{label},
+			reply = #{reply},
+			major = #{major},
+			service = #{service},
+			total = #{total},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_comment SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

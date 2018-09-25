@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_gym.dao.GymDao">
+    
+	<sql id="gymColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.user_id AS "userId",
+		a.login_name AS "loginName",
+		a.password AS "password",
+		a.service_phone AS "servicePhone",
+		a.intro AS "intro",
+		a.location AS "location",
+		a.province AS "province",
+		a.city AS "city",
+		a.district AS "district",
+		a.longitute AS "longitute",
+		a.latitute AS "latitute",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.freezing_state AS "freezingState",
+		a.img_url AS "imgUrl",
+		a.hyperlink AS "hyperlink",
+		a.area_code AS "areaCode",
+		a.monday_time AS "mondayTime",
+		a.tuesday_time AS "tuesdayTime",
+		a.wednesday_time AS "wednesdayTime",
+		a.thursday_time AS "thursdayTime",
+		a.friday_time AS "fridayTime",
+		a.saturday_time AS "saturdayTime",
+		a.sunday_time AS "sundayTime",
+		a.member_price AS "memberPrice"
+	</sql>
+	
+	<sql id="gymColumnsWithoutPassword">
+		a.id AS "id",
+		a.name AS "name",
+		a.user_id AS "userId",
+		a.login_name AS "loginName",
+		a.service_phone AS "servicePhone",
+		a.intro AS "intro",
+		a.location AS "location",
+		a.province AS "province",
+		a.city AS "city",
+		a.district AS "district",
+		a.longitute AS "longitute",
+		a.latitute AS "latitute",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.freezing_state AS "freezingState",
+		a.img_url AS "imgUrl",
+		a.hyperlink AS "hyperlink",
+		a.area_code AS "areaCode",
+		a.monday_time AS "mondayTime",
+		a.tuesday_time AS "tuesdayTime",
+		a.wednesday_time AS "wednesdayTime",
+		a.thursday_time AS "thursdayTime",
+		a.friday_time AS "fridayTime",
+		a.saturday_time AS "saturdayTime",
+		a.sunday_time AS "sundayTime",
+		a.member_price AS "memberPrice"
+	</sql>
+	
+	
+	<sql id="gymJoins">
+	</sql>
+    
+	<select id="get" resultType="Gym">
+		SELECT 
+			<include refid="gymColumns"/>
+		FROM b_gym a
+		<include refid="gymJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Gym">
+		SELECT 
+			<include refid="gymColumnsWithoutPassword"/>
+		FROM b_gym a
+		<include refid="gymJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="freezingState != null and freezingState != ''">
+				AND a.freezing_state = #{freezingState}
+			</if>
+			<if test="servicePhone != null and servicePhone != ''">
+				AND a.service_phone LIKE 
+					<if test="dbName == 'oracle'">'%'||#{servicePhone}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{servicePhone}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{servicePhone},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Gym">
+		SELECT 
+			<include refid="gymColumns"/>
+		FROM b_gym a
+		<include refid="gymJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_gym(
+			id,
+			name,
+			user_id,
+			login_name,
+			password,
+			service_phone,
+			intro,
+			location,
+			province,
+			city,
+			district,
+			longitute,
+			latitute,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag,
+			freezing_state,
+			img_url,
+			hyperlink,
+			area_code,
+			monday_time,
+			tuesday_time,
+			wednesday_time,
+			thursday_time,
+			friday_time,
+			saturday_time,
+			sunday_time,
+			member_price
+		) VALUES (
+			#{id},
+			#{name},
+			#{userId},
+			#{loginName},
+			#{password},
+			#{servicePhone},
+			#{intro},
+			#{location},
+			#{province},
+			#{city},
+			#{district},
+			#{longitute},
+			#{latitute},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag},
+			#{freezingState},
+			#{imgUrl},
+			#{hyperlink},
+			#{areaCode},
+			#{mondayTime},
+			#{tuesdayTime},
+			#{wednesdayTime},
+			#{thursdayTime},
+			#{fridayTime},
+			#{saturdayTime},
+			#{sundayTime},
+			#{memberPrice}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_gym SET 	
+			name = #{name},
+			user_id = #{userId},
+			login_name = #{loginName},
+			password = #{password},
+			service_phone = #{servicePhone},
+			intro = #{intro},
+			location = #{location},
+			province = #{province},
+			city = #{city},
+			district = #{district},
+			longitute = #{longitute},
+			latitute = #{latitute},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks},
+			freezing_state = #{freezingState},
+			img_url = #{imgUrl},
+			hyperlink = #{hyperlink},
+			area_code = #{areaCode},
+			monday_time=#{mondayTime},
+			tuesday_time=#{tuesdayTime},
+			wednesday_time=#{wednesdayTime},
+			thursday_time=#{thursdayTime},
+			friday_time=#{fridayTime},
+			saturday_time=#{saturdayTime},
+			sunday_time=#{sundayTime},
+			member_price=#{memberPrice}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_gym SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_user_inbody.dao.UserInbodyDao">
+    
+	<sql id="userInbodyColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.coach_id AS "coachId",
+		a.gym_id AS "gymId",
+		a.height AS "height",
+		a.weight AS "weight",
+		a.bmi_index AS "bmiIndex",
+		a.skeletal_muscle AS "skeletalMuscle",
+		a.body_fat_rate AS "bodyFatRate",
+		a.body_fat AS "bodyFat",
+		a.whr AS "whr",
+		a.basal_metabolism AS "basalMetabolism",
+		a.muscle_control AS "muscleControl",
+		a.fat_control AS "fatControl",
+		a.visceral_adipose_grade AS "visceralAdiposeGrade",
+		a.health_assessment_score AS "healthAssessmentScore",
+		a.pelvic_stability AS "pelvicStability",
+		a.core_activation AS "coreActivation",
+		a.respiratory_reconstruction AS "respiratoryReconstruction",
+		a.test_time AS "testTime",
+		a.waistline AS "waistline",
+		a.hipline AS "hipline",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="UserInbodyTest">
+	    a.weight AS "weight",
+		a.bmi_index AS "bmiIndex",
+		a.skeletal_muscle AS "skeletalMuscle",
+		a.body_fat_rate AS "bodyFatRate",
+		a.body_fat AS "bodyFat",
+		a.whr AS "whr",
+		a.basal_metabolism AS "basalMetabolism",
+		a.muscle_control AS "muscleControl",
+		a.fat_control AS "fatControl",
+		a.visceral_adipose_grade AS "visceralAdiposeGrade",
+		a.health_assessment_score AS "healthAssessmentScore",
+		a.pelvic_stability AS "pelvicStability",
+		a.core_activation AS "coreActivation",
+		a.respiratory_reconstruction AS "respiratoryReconstruction",
+		a.create_date AS "testTime"
+	</sql>
+	
+	<sql id="userInbodyJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+	</sql>
+	
+	<select id="getUserInbody" resultType="UserInbody" parameterType="String">
+            SELECT
+               <include refid="UserInbodyTest"/>
+            FROM b_user_inbody a
+            <include refid="userInbodyJoins"/>
+		    WHERE a.user_id = #{userId}	
+	</select>
+    
+	<select id="get" resultType="UserInbody">
+		SELECT 
+			<include refid="userInbodyColumns"/>
+		FROM b_user_inbody a
+		<include refid="userInbodyJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getInt" resultType="UserInbody">
+		SELECT 
+			<include refid="userInbodyColumns"/>
+		FROM b_user_inbody a
+		<include refid="userInbodyJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="UserInbody">
+		SELECT 
+			<include refid="userInbodyColumns"/>
+		FROM b_user_inbody a
+		<include refid="userInbodyJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="coachId != null and coachId != ''">
+				AND a.coach_id = #{coachId}
+			</if>
+			<if test="gymId != null and gymId != ''">
+				AND a.gym_id = #{gymId}
+			</if>
+			<if test="height != null and height != ''">
+				AND a.height = #{height}
+			</if>
+			<if test="weight != null and weight != ''">
+				AND a.weight = #{weight}
+			</if>
+			<if test="beginBmiIndex != null and endBmiIndex != null and beginBmiIndex != '' and endBmiIndex != ''">
+				AND a.bmi_index BETWEEN #{beginBmiIndex} AND #{endBmiIndex}
+			</if>
+			<if test="skeletalMuscle != null and skeletalMuscle != ''">
+				AND a.skeletal_muscle = #{skeletalMuscle}
+			</if>
+			<if test="beginCreateDate != null and endCreateDate != null and beginCreateDate != '' and endCreateDate != ''">
+				AND a.test_time BETWEEN #{beginCreateDate} AND #{endCreateDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.test_time DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="UserInbody">
+		SELECT 
+			<include refid="userInbodyColumns"/>
+		FROM b_user_inbody a
+		<include refid="userInbodyJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_user_inbody(
+			id,
+			user_id,
+			coach_id,
+			gym_id,
+			height,
+			weight,
+			bmi_index,
+			skeletal_muscle,
+			body_fat_rate,
+			body_fat,
+			whr,
+			basal_metabolism,
+			muscle_control,
+			fat_control,
+			visceral_adipose_grade,
+			health_assessment_score,
+			pelvic_stability,
+			core_activation,
+			respiratory_reconstruction,
+			test_time,
+			waistline,
+			hipline,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userId},
+			#{coachId},
+			#{gymId},
+			#{height},
+			#{weight},
+			#{bmiIndex},
+			#{skeletalMuscle},
+			#{bodyFatRate},
+			#{bodyFat},
+			#{whr},
+			#{basalMetabolism},
+			#{muscleControl},
+			#{fatControl},
+			#{visceralAdiposeGrade},
+			#{healthAssessmentScore},
+			#{pelvicStability},
+			#{coreActivation},
+			#{respiratoryReconstruction},
+			#{testTime},
+			#{waistline},
+			#{hipline},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<insert id="insertInbody">
+	        INSERT INTO b_user_inbody(
+			user_id,
+			coach_id,
+			gym_id,
+			bmi_index,
+			skeletal_muscle,
+			body_fat_rate,
+			body_fat,
+			whr,
+			basal_metabolism,
+			muscle_control,
+			fat_control,
+			visceral_adipose_grade,
+			health_assessment_score,
+			pelvic_stability,
+			core_activation,
+			respiratory_reconstruction
+		) VALUES (
+			#{userId},
+			#{coachId},
+			#{gymId},
+			#{bmiIndex},
+			#{skeletalMuscle},
+			#{bodyFatRate},
+			#{bodyFat},
+			#{whr},
+			#{basalMetabolism},
+			#{muscleControl},
+			#{fatControl},
+			#{visceralAdiposeGrade},
+			#{healthAssessmentScore},
+			#{pelvicStability},
+			#{coreActivation},
+			#{respiratoryReconstruction}
+		)
+	</insert>
+	
+	<update id="TestUpdate"  parameterType="com.gimc.user.modules.b_user_inbody.entity.UserInbody">
+	       UPDATE b_user_inbody SET 	
+			user_id = #{userId},
+			coach_id = #{coachId},
+			gym_id = #{gymId},
+			bmi_index = #{bmiIndex},
+			skeletal_muscle = #{skeletalMuscle},
+			body_fat_rate = #{bodyFatRate},
+			body_fat = #{bodyFat},
+			whr = #{whr},
+			basal_metabolism = #{basalMetabolism},
+			muscle_control = #{muscleControl},
+			fat_control = #{fatControl},
+			visceral_adipose_grade = #{visceralAdiposeGrade},
+			health_assessment_score = #{healthAssessmentScore},
+			pelvic_stability = #{pelvicStability},
+			core_activation = #{coreActivation},
+			respiratory_reconstruction = #{respiratoryReconstruction}
+		WHERE user_id = #{userId}
+	</update>
+	
+	<update id="update">
+		UPDATE b_user_inbody SET 	
+			user_id = #{userId},
+			coach_id = #{coachId},
+			gym_id = #{gymId},
+			height = #{height},
+			weight = #{weight},
+			bmi_index = #{bmiIndex},
+			skeletal_muscle = #{skeletalMuscle},
+			body_fat_rate = #{bodyFatRate},
+			body_fat = #{bodyFat},
+			whr = #{whr},
+			basal_metabolism = #{basalMetabolism},
+			muscle_control = #{muscleControl},
+			fat_control = #{fatControl},
+			visceral_adipose_grade = #{visceralAdiposeGrade},
+			health_assessment_score = #{healthAssessmentScore},
+			pelvic_stability = #{pelvicStability},
+			core_activation = #{coreActivation},
+			respiratory_reconstruction = #{respiratoryReconstruction},
+			test_time = #{testTime},
+			waistline = #{waistline},
+			hipline = #{hipline},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id}
+		WHERE user_id = #{userId}
+	</update>
+	
+	
+	
+	<update id="delete">
+		UPDATE b_user_inbody SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

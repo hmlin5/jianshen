@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_user_test.dao.UserTestDao">
+    
+	<sql id="userTestColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.user_name AS "userName",
+		a.age AS "age",
+		a.sex AS "sex",
+		a.height AS "height",
+		a.weight AS "weight",
+		a.rest_habbit AS "restHabbit",
+		a.sport_frequency AS "sportFrequency",
+		a.work_duration AS "workDuration",
+		a.diet_habbit AS "dietHabbit",
+		a.burning_goal AS "burningGoal",
+		a.rest_habbit_result AS "restHabbitResult",
+		a.sport_frequency_result AS "sportFrequencyResult",
+		a.work_duration_result AS "workDurationResult",
+		a.diet_habbit_result AS "dietHabbitResult",
+		a.burning_goal_result AS "burningGoalResult",
+		a.bmi_index AS "bmiIndex",
+		a.recommend_course AS "recommendCourse",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="userTestJoins">
+	</sql>
+    
+	<select id="get" resultType="UserTest">
+		SELECT 
+			<include refid="userTestColumns"/>
+		FROM b_user_test a
+		<include refid="userTestJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="UserTest">
+		SELECT 
+			<include refid="userTestColumns"/>
+		FROM b_user_test a
+		<include refid="userTestJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="userName != null and userName != ''">
+				AND a.user_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{userName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{userName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{userName},'%')</if>
+			</if>
+			<if test="beginAge != null and endAge != null and beginAge != '' and endAge != ''">
+				AND a.age BETWEEN #{beginAge} AND #{endAge}
+			</if>
+			<if test="sex != null and sex != ''">
+				AND a.sex = #{sex}
+			</if>
+			<if test="recommendCourse != null and recommendCourse != ''">
+				AND a.recommend_course = #{recommendCourse}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="UserTest">
+		SELECT 
+			<include refid="userTestColumns"/>
+		FROM b_user_test a
+		<include refid="userTestJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_user_test(
+			id,
+			user_id,
+			user_name,
+			age,
+			sex,
+			height,
+			weight,
+			rest_habbit,
+			sport_frequency,
+			work_duration,
+			diet_habbit,
+			burning_goal,
+			rest_habbit_result,
+			sport_frequency_result,
+			work_duration_result,
+			diet_habbit_result,
+			burning_goal_result,
+			bmi_index,
+			recommend_course,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userId},
+			#{userName},
+			#{age},
+			#{sex},
+			#{height},
+			#{weight},
+			#{restHabbit},
+			#{sportFrequency},
+			#{workDuration},
+			#{dietHabbit},
+			#{burningGoal},
+			#{restHabbitResult},
+			#{sportFrequencyResult},
+			#{workDurationResult},
+			#{dietHabbitResult},
+			#{burningGoalResult},
+			#{bmiIndex},
+			#{recommendCourse},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_user_test SET 	
+			user_id = #{userId},
+			user_name = #{userName},
+			age = #{age},
+			sex = #{sex},
+			height = #{height},
+			weight = #{weight},
+			rest_habbit = #{restHabbit},
+			sport_frequency = #{sportFrequency},
+			work_duration = #{workDuration},
+			diet_habbit = #{dietHabbit},
+			burning_goal = #{burningGoal},
+			rest_habbit_result = #{restHabbitResult},
+			sport_frequency_result = #{sportFrequencyResult},
+			work_duration_result = #{workDurationResult},
+			diet_habbit_result = #{dietHabbitResult},
+			burning_goal_result = #{burningGoalResult},
+			bmi_index = #{bmiIndex},
+			recommend_course = #{recommendCourse},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_user_test SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

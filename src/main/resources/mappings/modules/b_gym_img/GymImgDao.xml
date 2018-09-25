@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_gym_img.dao.GymImgDao">
+    
+	<sql id="gymImgColumns">
+		a.id AS "id",
+		a.gym_id AS "gymId",
+		a.intro AS "intro",
+		a.url AS "url",
+		a.type AS "type",
+		a.seq AS "seq",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="gymImgJoins">
+	</sql>
+    
+	<select id="get" resultType="GymImg">
+		SELECT 
+			<include refid="gymImgColumns"/>
+		FROM b_gym_img a
+		<include refid="gymImgJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="GymImg">
+		SELECT 
+			<include refid="gymImgColumns"/>
+		FROM b_gym_img a
+		<include refid="gymImgJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="gymId != null and gymId != ''">
+				AND a.gym_id = #{gymId}
+			</if>
+			<if test="intro != null and intro != ''">
+				AND a.intro = #{intro}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="seq != null and seq != ''">
+				AND a.seq = #{seq}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.seq ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="GymImg">
+		SELECT 
+			<include refid="gymImgColumns"/>
+		FROM b_gym_img a
+		<include refid="gymImgJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_gym_img(
+			id,
+			gym_id,
+			intro,
+			url,
+			type,
+			seq,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{gymId},
+			#{intro},
+			#{url},
+			#{type},
+			#{seq},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_gym_img SET 	
+			gym_id = #{gymId},
+			intro = #{intro},
+			url = #{url},
+			type = #{type},
+			seq = #{seq},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_gym_img SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

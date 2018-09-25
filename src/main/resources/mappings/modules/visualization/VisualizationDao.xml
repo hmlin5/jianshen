@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.visualization.dao.VisualizationDao">
+    
+	<sql id="visualizationColumns">
+		a.id AS "id",
+		a.gym_num AS "gymNum",
+		a.coach_num AS "coachNum",
+		a.coach_login AS "coachLogin",
+		a.private_user AS "privateUser",
+		a.user_activation AS "userActivation",
+		a.private_login AS "privateLogin",
+		a.contract__order AS "contractOrder",
+		a.contract_success AS "contractSuccess",
+		a.robbing__order AS "robbingOrder",
+		a.robbing_success AS "robbingSuccess",
+		a.arrange_order AS "arrangeOrder",
+		a.arrange_success AS "arrangeSuccess"
+	</sql>
+	
+	<sql id="visualizationJoins">
+	</sql>
+    
+	<select id="get" resultType="Visualization">
+		SELECT 
+			<include refid="visualizationColumns"/>
+		FROM visualization a
+		<include refid="visualizationJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Visualization">
+		SELECT 
+			<include refid="visualizationColumns"/>
+		FROM visualization a
+		<include refid="visualizationJoins"/>
+		<where>
+			
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="gymNum != null and gymNum != ''">
+				AND a.gym_num = #{gymNum}
+			</if>
+			<if test="coachNum != null and coachNum != ''">
+				AND a.coach_num = #{coachNum}
+			</if>
+			<if test="coachLogin != null and coachLogin != ''">
+				AND a.coach_login = #{coachLogin}
+			</if>
+			<if test="privateUser != null and privateUser != ''">
+				AND a.private_user = #{privateUser}
+			</if>
+			<if test="userActivation != null and userActivation != ''">
+				AND a.user_activation = #{userActivation}
+			</if>
+			<if test="privateLogin != null and privateLogin != ''">
+				AND a.private_login = #{privateLogin}
+			</if>
+			<if test="contractOrder != null and contractOrder != ''">
+				AND a.contract__order = #{contractOrder}
+			</if>
+			<if test="contractSuccess != null and contractSuccess != ''">
+				AND a.contract_success = #{contractSuccess}
+			</if>
+			<if test="robbingOrder != null and robbingOrder != ''">
+				AND a.robbing__order = #{robbingOrder}
+			</if>
+			<if test="robbingSuccess != null and robbingSuccess != ''">
+				AND a.robbing_success = #{robbingSuccess}
+			</if>
+			<if test="arrangeOrder != null and arrangeOrder != ''">
+				AND a.arrange_order = #{arrangeOrder}
+			</if>
+			<if test="arrangeSuccess != null and arrangeSuccess != ''">
+				AND a.arrange_success = #{arrangeSuccess}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Visualization">
+		SELECT 
+			<include refid="visualizationColumns"/>
+		FROM visualization a
+		<include refid="visualizationJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO visualization(
+			id,
+			gym_num,
+			coach_num,
+			coach_login,
+			private_user,
+			user_activation,
+			private_login,
+			contract__order,
+			contract_success,
+			robbing__order,
+			robbing_success,
+			arrange_order,
+			arrange_success
+		) VALUES (
+			#{id},
+			#{gymNum},
+			#{coachNum},
+			#{coachLogin},
+			#{privateUser},
+			#{userActivation},
+			#{privateLogin},
+			#{contractOrder},
+			#{contractSuccess},
+			#{robbingOrder},
+			#{robbingSuccess},
+			#{arrangeOrder},
+			#{arrangeSuccess}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE visualization SET 	
+			gym_num = #{gymNum},
+			coach_num = #{coachNum},
+			coach_login = #{coachLogin},
+			private_user = #{privateUser},
+			user_activation = #{userActivation},
+			private_login = #{privateLogin},
+			contract__order = #{contractOrder},
+			contract_success = #{contractSuccess},
+			robbing__order = #{robbingOrder},
+			robbing_success = #{robbingSuccess},
+			arrange_order = #{arrangeOrder},
+			arrange_success = #{arrangeSuccess}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM visualization
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_user.dao.AppUserDao">
+    
+	<sql id="appUserColumns">
+		a.id AS "id",
+		a.login_name AS "loginName",
+		a.password AS "password",
+		a.phone AS "phone",
+		a.email AS "email",
+		a.nick_name AS "nickName",
+		a.real_name AS "realName",
+		a.id_card AS "idCard",
+		a.sex AS "sex",
+		a.head_img_url AS "headImgUrl",
+		a.bg_img_url AS "bgImgUrl",
+		a.coach_img_url AS "coachImgUrl",
+		a.stu_img_url AS "stuImgUrl",
+		a.active_gym_id AS "activeGymId",
+		a.birthday AS "birthday",
+		a.regist_time AS "registTime",
+		a.login_time AS "loginTime",
+		a.active_time AS "activeTime",
+		a.user_type AS "userType",
+		a.open_card_time AS "openCardTime",
+		a.course_count AS "courseCount",
+		a.gym_count AS "gymCount",
+		a.height AS "height",
+		a.weight AS "weight",
+		a.signature AS "signature",
+		a.intro AS "intro",
+		a.lock_flag AS "lockFlag",
+		a.province AS "province",
+		a.city AS "city",
+		a.district AS "district",
+		a.bg_type AS "bgType",
+		a.follow_num AS "followNum",
+		a.follower_num AS "followerNum",
+		a.token AS "token",
+		a.rc_token AS "rcToken",
+		a.label AS "label",
+		a.phone_private_level AS "phonePrivateLevel",
+		a.msg_receive_level AS "msgReceiveLevel",
+		a.charger_id AS "chargerId",
+		a.charger_name AS "chargerName",
+		a.activate_flag AS "activateFlag",
+		a.coach_flag AS "coachFlag",
+		a.stu_flag AS "stuFlag",
+		a.source AS "source",
+		a.first_visit_stu_flag AS "firstVisitStuFlag",
+		a.first_visit_coach_flag AS "firstVisitCoachFlag",
+		a.burning_goal AS "burningGoal",
+		a.coach_score AS "coachScore",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	
+	
+	<sql id="appUserColumnsWithoutPassword">
+		a.id AS "id",
+		a.login_name AS "loginName",
+		a.phone AS "phone",
+		a.email AS "email",
+		a.nick_name AS "nickName",
+		a.real_name AS "realName",
+		a.id_card AS "idCard",
+		a.sex AS "sex",
+		a.head_img_url AS "headImgUrl",
+		a.bg_img_url AS "bgImgUrl",
+		a.coach_img_url AS "coachImgUrl",
+		a.stu_img_url AS "stuImgUrl",
+		a.active_gym_id AS "activeGymId",
+		a.birthday AS "birthday",
+		a.regist_time AS "registTime",
+		a.login_time AS "loginTime",
+		a.active_time AS "activeTime",
+		a.user_type AS "userType",
+		a.open_card_time AS "openCardTime",
+		a.course_count AS "courseCount",
+		a.gym_count AS "gymCount",
+		a.height AS "height",
+		a.weight AS "weight",
+		a.signature AS "signature",
+		a.intro AS "intro",
+		a.lock_flag AS "lockFlag",
+		a.province AS "province",
+		a.city AS "city",
+		a.district AS "district",
+		a.bg_type AS "bgType",
+		a.follow_num AS "followNum",
+		a.follower_num AS "followerNum",
+		a.token AS "token",
+		a.rc_token AS "rcToken",
+		a.label AS "label",
+		a.phone_private_level AS "phonePrivateLevel",
+		a.msg_receive_level AS "msgReceiveLevel",
+		a.charger_id AS "chargerId",
+		a.charger_name AS "chargerName",
+		a.activate_flag AS "activateFlag",
+		a.coach_flag AS "coachFlag",
+		a.stu_flag AS "stuFlag",
+		a.source AS "source",
+		a.first_visit_stu_flag AS "firstVisitStuFlag",
+		a.first_visit_coach_flag AS "firstVisitCoachFlag",
+		a.burning_goal AS "burningGoal",
+		a.coach_score AS "coachScore",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	
+	
+	<sql id="appUserJoins">
+	</sql>
+    
+    
+      <select id="findGymUserList" resultType="AppUser">
+		SELECT 
+			<include refid="appUserColumns"/>
+		FROM b_app_user a
+		, b_user_gym b 
+		<where>
+			a.id = b.user_id and b.gym_id=#{gymId} and b.relation=#{relation} and
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+    
+    <select id="getCoachName" resultType="String">
+	   select nick_name from b_app_user
+	   
+	</select>
+    
+	<select id="get" resultType="AppUser">
+		SELECT 
+			<include refid="appUserColumns"/>
+		FROM b_app_user a
+		<include refid="appUserJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getStuId" resultType="AppUser">
+		SELECT 
+			<include refid="appUserColumns"/>
+		FROM b_app_user a
+		<include refid="appUserJoins"/>
+		WHERE a.id = #{stuId}
+	</select>
+	
+	
+	<select id="findList" resultType="AppUser">
+		SELECT 
+			<include refid="appUserColumnsWithoutPassword"/>
+		FROM b_app_user a
+		<include refid="appUserJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} and
+			a.id != 1
+			<if test="loginName != null and loginName != ''">
+				AND a.login_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{loginName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{loginName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{loginName},'%')</if>
+			</if>
+			<if test="nickName != null and nickName != ''">
+				AND a.nick_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{nickName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{nickName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{nickName},'%')</if>
+			</if>
+			<if test="realName != null and realName != ''">
+				AND a.real_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{realName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{realName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{realName},'%')</if>
+			</if>
+			<if test="sex != null and sex != ''">
+				AND a.sex = #{sex}
+			</if>
+			<if test="token != null and token != ''">
+				AND a.token = #{token}
+			</if>
+			<if test="phone != null and phone != ''">
+				AND a.phone = #{phone}
+			</if>
+			<if test="password != null and password != ''">
+				AND a.password = #{password}
+			</if>
+			<if test="activateFlag != null and activateFlag != ''">
+				AND a.activate_flag = #{activateFlag}
+			</if>
+			<if test="beginRegistTime != null and endRegistTime != null and beginRegistTime != '' and endRegistTime != ''">
+				AND a.regist_time BETWEEN #{beginRegistTime} AND #{endRegistTime}
+			</if>
+			<if test="userType != null and userType != ''">
+				AND a.user_type = #{userType}
+			</if>
+			<if test="excludeIds != null and excludeIds.size()>0">
+				AND a.id NOT IN
+				<foreach collection="excludeIds" index="index" item="id" open="(" close=")" separator=",">  
+		            #{id}  
+		        </foreach>   
+			</if>
+			<if test="includeIds != null and includeIds.size()>0">
+				AND a.id IN
+				<foreach collection="includeIds" index="index" item="inId" open="(" close=")" separator=",">  
+		            #{inId}  
+		        </foreach>   
+			</if>
+			<if test="includeUserTypes != null and includeUserTypes.size()>0">
+				AND a.user_type IN
+				<foreach collection="includeUserTypes" index="index" item="type" open="(" close=")" separator=",">  
+		            #{type}  
+		        </foreach>   
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="findListWithPassWord" resultType="AppUser">
+		SELECT 
+			<include refid="appUserColumns"/>
+		FROM b_app_user a
+		<include refid="appUserJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} and
+			a.id != 1
+			<if test="loginName != null and loginName != ''">
+				AND a.login_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{loginName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{loginName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{loginName},'%')</if>
+			</if>
+			<if test="nickName != null and nickName != ''">
+				AND a.nick_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{nickName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{nickName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{nickName},'%')</if>
+			</if>
+			<if test="realName != null and realName != ''">
+				AND a.real_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{realName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{realName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{realName},'%')</if>
+			</if>
+			<if test="sex != null and sex != ''">
+				AND a.sex = #{sex}
+			</if>
+			<if test="token != null and token != ''">
+				AND a.token = #{token}
+			</if>
+			<if test="phone != null and phone != ''">
+				AND a.phone = #{phone}
+			</if>
+			<if test="password != null and password != ''">
+				AND a.password = #{password}
+			</if>
+			<if test="activateFlag != null and activateFlag != ''">
+				AND a.activate_flag = #{activateFlag}
+			</if>
+			<if test="beginRegistTime != null and endRegistTime != null and beginRegistTime != '' and endRegistTime != ''">
+				AND a.regist_time BETWEEN #{beginRegistTime} AND #{endRegistTime}
+			</if>
+			<if test="userType != null and userType != ''">
+				AND a.user_type = #{userType}
+			</if>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	<select id="findAllList" resultType="AppUser">
+		SELECT 
+			<include refid="appUserColumns"/>
+		FROM b_app_user a
+		<include refid="appUserJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} and
+			a.id != 1
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert"  useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="AppUser">
+		INSERT INTO b_app_user(
+			id,
+			login_name,
+			password,
+			phone,
+			email,
+			nick_name,
+			real_name,
+			id_card,
+			sex,
+			head_img_url,
+			bg_img_url,
+			coach_img_url,
+			stu_img_url,
+			active_gym_id,
+			birthday,
+			regist_time,
+			login_time,
+			active_time,
+			user_type,
+			open_card_time,
+			course_count,
+			gym_count,
+			height,
+			weight,
+			signature,
+			intro,
+			lock_flag,
+			province,
+			city,
+			district,
+			bg_type,
+			follow_num,
+			follower_num,
+			token,
+			rc_token,
+			label,
+			phone_private_level,
+			msg_receive_level,
+			charger_id,
+			charger_name,
+			activate_flag,
+			coach_flag,
+			stu_flag,
+			source,
+			first_visit_stu_flag,
+			first_visit_coach_flag,
+			burning_goal,
+			coach_score,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{loginName},
+			#{password},
+			#{phone},
+			#{email},
+			#{nickName},
+			#{realName},
+			#{idCard},
+			#{sex},
+			#{headImgUrl},
+			#{bgImgUrl},
+			#{coachImgUrl},
+			#{stuImgUrl},
+			#{activeGymId},
+			#{birthday},
+			#{registTime},
+			#{loginTime},
+			#{activeTime},
+			#{userType},
+			#{openCardTime},
+			#{courseCount},
+			#{gymCount},
+			#{height},
+			#{weight},
+			#{signature},
+			#{intro},
+			0,
+			#{province},
+			#{city},
+			#{district},
+			#{bgType},
+			#{followNum},
+			#{followerNum},
+			#{token},
+			#{rcToken},
+			#{label},
+			#{phonePrivateLevel},
+			#{msgReceiveLevel},
+			#{chargerId},
+			#{chargerName},
+			#{activateFlag},
+			#{coachFlag},
+			#{stuFlag},
+			#{source},
+			#{firstVisitStuFlag},
+			#{firstVisitCoachFlag},
+			#{burningGoal},
+			#{coachScore},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_app_user SET 	
+			login_name = #{loginName},
+			<if test="password != null and password != ''">
+				password = #{password},
+			</if>
+			phone = #{phone},
+			email = #{email},
+			nick_name = #{nickName},
+			real_name = #{realName},
+			id_card = #{idCard},
+			sex = #{sex},
+			head_img_url = #{headImgUrl},
+			bg_img_url = #{bgImgUrl},
+			coach_img_url = #{coachImgUrl},
+			stu_img_url = #{stuImgUrl},
+			active_gym_id = #{activeGymId},
+			birthday = #{birthday},
+			regist_time = #{registTime},
+			login_time = #{loginTime},
+			active_time = #{activeTime},
+			user_type = #{userType},
+			open_card_time = #{openCardTime},
+			course_count = #{courseCount},
+			gym_count = #{gymCount},
+			height = #{height},
+			weight = #{weight},
+			signature = #{signature},
+			intro = #{intro},
+			lock_flag = #{lockFlag},
+			province = #{province},
+			city = #{city},
+			district = #{district},
+			bg_type = #{bgType},
+			follow_num = #{followNum},
+			follower_num = #{followerNum},
+			token = #{token},
+			rc_token = #{rcToken},
+			label = #{label},
+			phone_private_level = #{phonePrivateLevel},
+			msg_receive_level = #{msgReceiveLevel},
+			charger_id = #{chargerId},
+			charger_name = #{chargerName},
+			activate_flag = #{activateFlag},
+			coach_flag = #{coachFlag},
+			stu_flag = #{stuFlag},
+			source = #{source},
+			first_visit_stu_flag = #{firstVisitStuFlag},
+			first_visit_coach_flag = #{firstVisitCoachFlag},
+			burning_goal = #{burningGoal},
+			coach_score = #{coachScore},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_app_user SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="lock">
+		UPDATE b_app_user SET 
+			lock_flag ="是"
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

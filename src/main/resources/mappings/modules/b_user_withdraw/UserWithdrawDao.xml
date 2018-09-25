@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_user_withdraw.dao.UserWithdrawDao">
+    
+	<sql id="userWithdrawColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.user_name AS "userName",
+		a.user_phone AS "userPhone",
+		a.withdraw_no AS "withdrawNo",
+		a.withdraw_amount AS "withdrawAmount",
+		a.withdraw_time AS "withdrawTime",
+		a.status AS "status",
+		a.head_bank_id AS "headBankId",
+		a.head_bank_name AS "headBankName",
+		a.branch_bank_id AS "branchBankId",
+		a.branch_bank_name AS "branchBankName",
+		a.bank_card_no AS "bankCardNo",
+		a.applicant AS "applicant",
+		a.fail_reason AS "failReason",
+		a.dealer AS "dealer",
+		a.deal_time AS "dealTime",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	
+	<sql id="withdrawAndPayInfoColumns">
+		id AS "id",
+		user_id AS "userId",
+		content AS "content",
+		no AS "no",
+		amount AS "amount",
+		time AS "time",
+		type AS "type",
+		del_flag AS "delFlag"
+	</sql>
+	
+	
+	
+	
+	
+	<sql id="userWithdrawJoins">
+	</sql>
+    
+	<select id="get" resultType="UserWithdraw">
+		SELECT 
+			<include refid="userWithdrawColumns"/>
+		FROM b_user_withdraw a
+		<include refid="userWithdrawJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="UserWithdraw">
+		SELECT 
+			<include refid="userWithdrawColumns"/>
+		FROM b_user_withdraw a
+		<include refid="userWithdrawJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="userName != null and userName != ''">
+				AND a.user_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{userName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{userName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{userName},'%')</if>
+			</if>
+			<if test="userPhone != null and userPhone != ''">
+				AND a.user_phone = #{userPhone}
+			</if>
+			<if test="withdrawNo != null and withdrawNo != ''">
+				AND a.withdraw_no = #{withdrawNo}
+			</if>
+			<if test="withdrawAmount != null and withdrawAmount != ''">
+				AND a.withdraw_amount = #{withdrawAmount}
+			</if>
+			<if test="beginWithdrawTime != null and endWithdrawTime != null and beginWithdrawTime != '' and endWithdrawTime != ''">
+				AND a.withdraw_time BETWEEN #{beginWithdrawTime} AND #{endWithdrawTime}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="headBankId != null and headBankId != ''">
+				AND a.head_bank_id = #{headBankId}
+			</if>
+			<if test="headBankName != null and headBankName != ''">
+				AND a.head_bank_name = #{headBankName}
+			</if>
+			<if test="branchBankId != null and branchBankId != ''">
+				AND a.branch_bank_id = #{branchBankId}
+			</if>
+			<if test="branchBankName != null and branchBankName != ''">
+				AND a.branch_bank_name = #{branchBankName}
+			</if>
+			<if test="bankCardNo != null and bankCardNo != ''">
+				AND a.bank_card_no = #{bankCardNo}
+			</if>
+			<if test="applicant != null and applicant != ''">
+				AND a.applicant = #{applicant}
+			</if>
+			<if test="dealer != null and dealer != ''">
+				AND a.dealer = #{dealer}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	<select id="findWithdrawAndPayInfoList" resultType="com.gimc.user.modules.b_user_withdraw.entity.MoneyDetail">
+		SELECT 
+			<include refid="withdrawAndPayInfoColumns"/>
+		FROM 
+		 (
+		    (SELECT 
+				id AS `id`,
+				coach_id AS `user_id`,
+				CONCAT('收到\"',stu_name,'\"打赏')  AS `content`,
+			    order_num AS `no`,
+			    pay_amount AS `amount`,
+			    pay_time AS `time`,
+			    'reward' AS `type` ,
+			    del_flag AS `del_flag`
+			    FROM
+			      b_pay_info
+		      ) 
+		    UNION
+		    ALL 
+		    (SELECT 
+		     	id AS `id`,
+		     	user_id AS `user_id`,
+		    	'提现' AS `content`,
+		      	withdraw_no AS `no`,
+		      	withdraw_amount AS `amount`,
+		      	withdraw_time AS `time`,
+		      	'withdraw' AS `type`,
+		      	del_flag AS `del_flag` 
+			    FROM
+			      b_user_withdraw
+			 )
+		  ) c  
+		<where>
+			del_flag = #{DEL_FLAG_NORMAL}
+			<if test="userId != null and userId != ''">
+				AND user_id = #{userId}
+			</if>
+			<if test="type != null and type != ''">
+				AND type = #{type}
+			</if>
+		</where>
+		ORDER BY time DESC
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="findAllList" resultType="UserWithdraw">
+		SELECT 
+			<include refid="userWithdrawColumns"/>
+		FROM b_user_withdraw a
+		<include refid="userWithdrawJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_user_withdraw(
+			id,
+			user_id,
+			user_name,
+			user_phone,
+			withdraw_no,
+			withdraw_amount,
+			withdraw_time,
+			status,
+			head_bank_id,
+			head_bank_name,
+			branch_bank_id,
+			branch_bank_name,
+			bank_card_no,
+			applicant,
+			fail_reason,
+			dealer,
+			deal_time,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userId},
+			#{userName},
+			#{userPhone},
+			#{withdrawNo},
+			#{withdrawAmount},
+			#{withdrawTime},
+			#{status},
+			#{headBankId},
+			#{headBankName},
+			#{branchBankId},
+			#{branchBankName},
+			#{bankCardNo},
+			#{applicant},
+			#{failReason},
+			#{dealer},
+			#{dealTime},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_user_withdraw SET 	
+			user_id = #{userId},
+			user_name = #{userName},
+			user_phone = #{userPhone},
+			withdraw_no = #{withdrawNo},
+			withdraw_amount = #{withdrawAmount},
+			withdraw_time = #{withdrawTime},
+			status = #{status},
+			head_bank_id = #{headBankId},
+			head_bank_name = #{headBankName},
+			branch_bank_id = #{branchBankId},
+			branch_bank_name = #{branchBankName},
+			bank_card_no = #{bankCardNo},
+			applicant = #{applicant},
+			fail_reason = #{failReason},
+			dealer = #{dealer},
+			deal_time = #{dealTime},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_user_withdraw SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

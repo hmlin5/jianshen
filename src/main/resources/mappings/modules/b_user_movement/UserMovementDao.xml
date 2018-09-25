@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_user_movement.dao.UserMovementDao">
+    
+	<sql id="userMovementColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.catalog_ids AS "catalogIds",
+		a.catalog_names AS "catalogNames",
+		a.catalog1_id AS "catalog1Id",
+		a.catalog1_name AS "catalog1Name",
+		a.catalog2_id AS "catalog2Id",
+		a.catalog2_name AS "catalog2Name",
+		a.difficulty AS "difficulty",
+		a.equipment_type AS "equipmentType",
+		a.zengji_group_num AS "zengjiGroupNum",
+		a.suxing_group_num AS "suxingGroupNum",
+		a.jianzhi_group_num AS "jianzhiGroupNum",
+		a.zengji_movement_num AS "zengjiMovementNum",
+		a.suxing_movement_num AS "suxingMovementNum",
+		a.jianzhi_movement_num AS "jianzhiMovementNum",
+		a.prepare_img_url AS "prepareImgUrl",
+		a.action_img_url AS "actionImgUrl",
+		a.introduction AS "introduction",
+		a.end_main_point AS "endMainPoint",
+		a.coach_tip AS "coachTip",
+		a.common_fault AS "commonFault",
+		a.prepare AS "prepare",
+		a.action AS "action",
+		a.pelvic_stability AS "pelvicStability",
+		a.core_activation AS "coreActivation",
+		a.respiratory_reconstruction AS "respiratoryReconstruction",
+		a.group_num AS "groupNum",
+		a.movement_num AS "movementNum",
+		a.parent AS "parent",
+		a.type AS "type",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="userMovementJoins">
+	</sql>
+    
+	<select id="get" resultType="UserMovement">
+		SELECT 
+			<include refid="userMovementColumns"/>
+		FROM b_user_movement a
+		<include refid="userMovementJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="UserMovement">
+		SELECT 
+			<include refid="userMovementColumns"/>
+		FROM b_user_movement a
+		<include refid="userMovementJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="catalog1Id != null and catalog1Id != ''">
+				AND a.catalog1_id = #{catalog1Id}
+			</if>
+			<if test="catalog1Name != null and catalog1Name != ''">
+				AND a.catalog1_name = #{catalog1Name}
+			</if>
+			<if test="catalog2Id != null and catalog2Id != ''">
+				AND a.catalog2_id = #{catalog2Id}
+			</if>
+			<if test="catalog2Name != null and catalog2Name != ''">
+				AND a.catalog2_name = #{catalog2Name}
+			</if>
+			<if test="difficulty != null and difficulty != ''">
+				AND a.difficulty = #{difficulty}
+			</if>
+			<if test="equipmentType != null and equipmentType != ''">
+				AND a.equipment_type = #{equipmentType}
+			</if>
+			<if test="zengjiGroupNum != null and zengjiGroupNum != ''">
+				AND a.zengji_group_num = #{zengjiGroupNum}
+			</if>
+			<if test="suxingGroupNum != null and suxingGroupNum != ''">
+				AND a.suxing_group_num = #{suxingGroupNum}
+			</if>
+			<if test="jianzhiGroupNum != null and jianzhiGroupNum != ''">
+				AND a.jianzhi_group_num = #{jianzhiGroupNum}
+			</if>
+			<if test="zengjiMovementNum != null and zengjiMovementNum != ''">
+				AND a.zengji_movement_num = #{zengjiMovementNum}
+			</if>
+			<if test="suxingMovementNum != null and suxingMovementNum != ''">
+				AND a.suxing_movement_num = #{suxingMovementNum}
+			</if>
+			<if test="jianzhiMovementNum != null and jianzhiMovementNum != ''">
+				AND a.jianzhi_movement_num = #{jianzhiMovementNum}
+			</if>
+			<if test="introduction != null and introduction != ''">
+				AND a.introduction LIKE 
+					<if test="dbName == 'oracle'">'%'||#{introduction}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{introduction}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{introduction},'%')</if>
+			</if>
+			<if test="endMainPoint != null and endMainPoint != ''">
+				AND a.end_main_point = #{endMainPoint}
+			</if>
+			<if test="coachTip != null and coachTip != ''">
+				AND a.coach_tip = #{coachTip}
+			</if>
+			<if test="commonFault != null and commonFault != ''">
+				AND a.common_fault LIKE 
+					<if test="dbName == 'oracle'">'%'||#{commonFault}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{commonFault}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{commonFault},'%')</if>
+			</if>
+			<if test="prepare != null and prepare != ''">
+				AND a.prepare LIKE 
+					<if test="dbName == 'oracle'">'%'||#{prepare}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{prepare}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{prepare},'%')</if>
+			</if>
+			<if test="action != null and action != ''">
+				AND a.action LIKE 
+					<if test="dbName == 'oracle'">'%'||#{action}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{action}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{action},'%')</if>
+			</if>
+			<if test="pelvicStability != null and pelvicStability != ''">
+				AND a.pelvic_stability = #{pelvicStability}
+			</if>
+			<if test="coreActivation != null and coreActivation != ''">
+				AND a.core_activation = #{coreActivation}
+			</if>
+			<if test="respiratoryReconstruction != null and respiratoryReconstruction != ''">
+				AND a.respiratory_reconstruction = #{respiratoryReconstruction}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="UserMovement">
+		SELECT 
+			<include refid="userMovementColumns"/>
+		FROM b_user_movement a
+		<include refid="userMovementJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert"   useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="UserMovement">
+		INSERT INTO b_user_movement(
+				id,
+			name,
+			catalog_ids,
+			catalog_names,
+			catalog1_id,
+			catalog1_name,
+			catalog2_id,
+			catalog2_name,
+			difficulty,
+			equipment_type,
+			zengji_group_num,
+			suxing_group_num,
+			jianzhi_group_num,
+			zengji_movement_num,
+			suxing_movement_num,
+			jianzhi_movement_num,
+			prepare_img_url,
+			action_img_url,
+			introduction,
+			end_main_point,
+			coach_tip,
+			common_fault,
+			prepare,
+			action,
+			pelvic_stability,
+			core_activation,
+			respiratory_reconstruction,
+			group_num,
+			movement_num,
+			parent,
+			type,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{name},
+			#{catalogIds},
+			#{catalogNames},
+			#{catalog1Id},
+			#{catalog1Name},
+			#{catalog2Id},
+			#{catalog2Name},
+			#{difficulty},
+			#{equipmentType},
+			#{zengjiGroupNum},
+			#{suxingGroupNum},
+			#{jianzhiGroupNum},
+			#{zengjiMovementNum},
+			#{suxingMovementNum},
+			#{jianzhiMovementNum},
+			#{prepareImgUrl},
+			#{actionImgUrl},
+			#{introduction},
+			#{endMainPoint},
+			#{coachTip},
+			#{commonFault},
+			#{prepare},
+			#{action},
+			#{pelvicStability},
+			#{coreActivation},
+			#{respiratoryReconstruction},
+			#{groupNum},
+			#{movementNum},
+			#{parent},
+			#{type},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_user_movement SET 	
+			name = #{name},
+			catalog_ids = #{catalogIds},
+			catalog_names = #{catalogNames},
+			catalog1_id = #{catalog1Id},
+			catalog1_name = #{catalog1Name},
+			catalog2_id = #{catalog2Id},
+			catalog2_name = #{catalog2Name},
+			difficulty = #{difficulty},
+			equipment_type = #{equipmentType},
+			zengji_group_num = #{zengjiGroupNum},
+			suxing_group_num = #{suxingGroupNum},
+			jianzhi_group_num = #{jianzhiGroupNum},
+			zengji_movement_num = #{zengjiMovementNum},
+			suxing_movement_num = #{suxingMovementNum},
+			jianzhi_movement_num = #{jianzhiMovementNum},
+			prepare_img_url = #{prepareImgUrl},
+			action_img_url = #{actionImgUrl},
+			introduction = #{introduction},
+			end_main_point = #{endMainPoint},
+			coach_tip = #{coachTip},
+			common_fault = #{commonFault},
+			prepare = #{prepare},
+			action = #{action},
+			pelvic_stability = #{pelvicStability},
+			core_activation = #{coreActivation},
+			respiratory_reconstruction = #{respiratoryReconstruction},
+			group_num = #{groupNum},
+			movement_num = #{movementNum},
+			parent = #{parent},
+			type = #{type},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_user_movement SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+
+	<update id="updateUserMovement">
+		UPDATE b_user_movement SET
+		name = #{name},
+		catalog_ids = #{catalogIds},
+		catalog_names = #{catalogNames},
+		catalog1_id = #{catalog1Id},
+		catalog1_name = #{catalog1Name},
+		catalog2_id = #{catalog2Id},
+		catalog2_name = #{catalog2Name},
+		difficulty = #{difficulty},
+		equipment_type = #{equipmentType},
+		zengji_group_num = #{zengjiGroupNum},
+		suxing_group_num = #{suxingGroupNum},
+		jianzhi_group_num = #{jianzhiGroupNum},
+		zengji_movement_num = #{zengjiMovementNum},
+		suxing_movement_num = #{suxingMovementNum},
+		jianzhi_movement_num = #{jianzhiMovementNum},
+		prepare_img_url = #{prepareImgUrl},
+		action_img_url = #{actionImgUrl},
+		introduction = #{introduction},
+		end_main_point = #{endMainPoint},
+		coach_tip = #{coachTip},
+		common_fault = #{commonFault},
+		prepare = #{prepare},
+		action = #{action},
+		pelvic_stability = #{pelvicStability},
+		core_activation = #{coreActivation},
+		respiratory_reconstruction = #{respiratoryReconstruction},
+		group_num = #{groupNum},
+		movement_num = #{movementNum},
+		update_date = #{updateDate},
+		update_by = #{updateBy.id},
+		remarks = #{remarks}
+		WHERE parent = #{parent} and type = #{type}
+	</update>
+	
+</mapper>

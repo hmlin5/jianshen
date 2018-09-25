@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_msg.dao.MsgDao">
+    
+	<sql id="msgColumns">
+		a.id AS "id",
+		a.title AS "title",
+		a.to_user_type AS "toUserType",
+		a.to_user_id AS "toUserId",
+		a.to_user_name AS "toUserName",
+		a.from_user_id AS "fromUserId",
+		a.from_user_name AS "fromUserName",
+		a.content AS "content",
+		a.is_read AS "isRead",
+		a.msg_type AS "msgType",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="msgJoins">
+	</sql>
+    
+	<select id="get" resultType="Msg">
+		SELECT 
+			<include refid="msgColumns"/>
+		FROM b_msg a
+		<include refid="msgJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Msg">
+		SELECT 
+			<include refid="msgColumns"/>
+		FROM b_msg a
+		<include refid="msgJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="toUserType != null and toUserType != ''">
+				AND a.to_user_type = #{toUserType}
+			</if>
+			<if test="toUserId != null and toUserId != ''">
+				AND a.to_user_id = #{toUserId}
+			</if>
+			<if test="toUserName != null and toUserName != ''">
+				AND a.to_user_name = #{toUserName}
+			</if>
+			<if test="fromUserId != null and fromUserId != ''">
+				AND a.from_user_id = #{fromUserId}
+			</if>
+			<if test="fromUserName != null and fromUserName != ''">
+				AND a.from_user_name = #{fromUserName}
+			</if>
+			<if test="isRead != null and isRead != ''">
+				AND a.is_read = #{isRead}
+			</if>
+			<if test="msgType != null and msgType != ''">
+				AND a.msg_type = #{msgType}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Msg">
+		SELECT 
+			<include refid="msgColumns"/>
+		FROM b_msg a
+		<include refid="msgJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_msg(
+			id,
+			title,
+			to_user_type,
+			to_user_id,
+			to_user_name,
+			from_user_id,
+			from_user_name,
+			content,
+			is_read,
+			msg_type,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{title},
+			#{toUserType},
+			#{toUserId},
+			#{toUserName},
+			#{fromUserId},
+			#{fromUserName},
+			#{content},
+			#{isRead},
+			#{msgType},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_msg SET 	
+			title = #{title},
+			to_user_type = #{toUserType},
+			to_user_id = #{toUserId},
+			to_user_name = #{toUserName},
+			from_user_id = #{fromUserId},
+			from_user_name = #{fromUserName},
+			content = #{content},
+			is_read = #{isRead},
+			msg_type = #{msgType},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_msg SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

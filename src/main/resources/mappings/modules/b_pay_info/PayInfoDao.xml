@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_pay_info.dao.PayInfoDao">
+    
+	<sql id="payInfoColumns">
+		a.id AS "id",
+		a.order_num AS "orderNum",
+		a.pay_way AS "payWay",
+		a.ali_trade_no AS "aliTradeNo",
+		a.wx_trade_no AS "wxTradeNo",
+		a.payflag AS "payflag",
+		a.pay_amount AS "payAmount",
+		a.pay_time AS "payTime",
+		a.refundflag AS "refundflag",
+		a.refund_amount AS "refundAmount",
+		a.refund_time AS "refundTime",
+		a.stu_id AS "stuId",
+		a.stu_name AS "stuName",
+		a.coach_id AS "coachId",
+		a.coach_name AS "coachName",
+		a.status AS "status",
+		a.defrost_time AS "defrostTime",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="payInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="PayInfo">
+		SELECT 
+			<include refid="payInfoColumns"/>
+		FROM b_pay_info a
+		<include refid="payInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PayInfo">
+		SELECT 
+			<include refid="payInfoColumns"/>
+		FROM b_pay_info a
+		<include refid="payInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orderNum != null and orderNum != ''">
+				AND a.order_num = #{orderNum}
+			</if>
+			<if test="payWay != null and payWay != ''">
+				AND a.pay_way = #{payWay}
+			</if>
+			<if test="aliTradeNo != null and aliTradeNo != ''">
+				AND a.ali_trade_no = #{aliTradeNo}
+			</if>
+			<if test="wxTradeNo != null and wxTradeNo != ''">
+				AND a.wx_trade_no = #{wxTradeNo}
+			</if>
+			<if test="payflag != null and payflag != ''">
+				AND a.payflag = #{payflag}
+			</if>
+			<if test="payAmount != null and payAmount != ''">
+				AND a.pay_amount = #{payAmount}
+			</if>
+			<if test="beginPayTime != null and endPayTime != null and beginPayTime != '' and endPayTime != ''">
+				AND a.pay_time BETWEEN #{beginPayTime} AND #{endPayTime}
+			</if>
+			<if test="refundflag != null and refundflag != ''">
+				AND a.refundflag = #{refundflag}
+			</if>
+			<if test="refundAmount != null and refundAmount != ''">
+				AND a.refund_amount = #{refundAmount}
+			</if>
+			<if test="beginRefundTime != null and endRefundTime != null and beginRefundTime != '' and endRefundTime != ''">
+				AND a.refund_time BETWEEN #{beginRefundTime} AND #{endRefundTime}
+			</if>
+			<if test="stuId != null and stuId != ''">
+				AND a.stu_id = #{stuId}
+			</if>
+			<if test="coachId != null and coachId != ''">
+				AND a.coach_id = #{coachId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.pay_time DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PayInfo">
+		SELECT 
+			<include refid="payInfoColumns"/>
+		FROM b_pay_info a
+		<include refid="payInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_pay_info(
+			id,
+			order_num,
+			pay_way,
+			ali_trade_no,
+			wx_trade_no,
+			payflag,
+			pay_amount,
+			pay_time,
+			refundflag,
+			refund_amount,
+			refund_time,
+			stu_id,
+			stu_name,
+			coach_id,
+			coach_name,
+			status,
+			defrost_time,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{orderNum},
+			#{payWay},
+			#{aliTradeNo},
+			#{wxTradeNo},
+			#{payflag},
+			#{payAmount},
+			#{payTime},
+			#{refundflag},
+			#{refundAmount},
+			#{refundTime},
+			#{stuId},
+			#{stuName},
+			#{coachId},
+			#{coachName},
+			#{status},
+			#{defrostTime},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_pay_info SET 	
+			order_num = #{orderNum},
+			pay_way = #{payWay},
+			ali_trade_no = #{aliTradeNo},
+			wx_trade_no = #{wxTradeNo},
+			payflag = #{payflag},
+			pay_amount = #{payAmount},
+			pay_time = #{payTime},
+			refundflag = #{refundflag},
+			refund_amount = #{refundAmount},
+			refund_time = #{refundTime},
+			stu_id = #{stuId},
+			stu_name = #{stuName},
+			coach_id = #{coachId},
+			coach_name = #{coachName},
+			status = #{status},
+			defrost_time = #{defrostTime},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_pay_info SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

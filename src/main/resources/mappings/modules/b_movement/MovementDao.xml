@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_movement.dao.MovementDao">
+    
+	<sql id="movementColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.catalog_ids AS "catalogIds",
+		a.catalog_names AS "catalogNames",
+		a.catalog1_id AS "catalog1Id",
+		a.catalog1_name AS "catalog1Name",
+		a.catalog2_id AS "catalog2Id",
+		a.catalog2_name AS "catalog2Name",
+		a.difficulty AS "difficulty",
+		a.equipment_type AS "equipmentType",
+		a.zengji_group_num AS "zengjiGroupNum",
+		a.suxing_group_num AS "suxingGroupNum",
+		a.jianzhi_group_num AS "jianzhiGroupNum",
+		a.zengji_movement_num AS "zengjiMovementNum",
+		a.suxing_movement_num AS "suxingMovementNum",
+		a.jianzhi_movement_num AS "jianzhiMovementNum",
+		a.prepare_img_url AS "prepareImgUrl",
+		a.action_img_url AS "actionImgUrl",
+		a.introduction AS "introduction",
+		a.end_main_point AS "endMainPoint",
+		a.coach_tip AS "coachTip",
+		a.common_fault AS "commonFault",
+		a.prepare AS "prepare",
+		a.action AS "action",
+		a.pelvic_stability AS "pelvicStability",
+		a.core_activation AS "coreActivation",
+		a.respiratory_reconstruction AS "respiratoryReconstruction",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="movementJoins">
+	</sql>
+    
+	<select id="get" resultType="Movement">
+		SELECT 
+			<include refid="movementColumns"/>
+		FROM b_movement a
+		<include refid="movementJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Movement">
+		SELECT 
+			<include refid="movementColumns"/>
+		FROM b_movement a
+		<include refid="movementJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="catalogIds != null and catalogIds != '' and !containFlag">
+				AND a.catalog_ids = #{catalogIds}
+			</if>
+			<if test="catalogIds != null and catalogIds != '' and containFlag">
+				AND FIND_IN_SET(#{catalogIds},catalog_ids)
+			</if>
+			<if test="catalogNames != null and catalogNames != ''">
+				AND a.catalog_names LIKE 
+					<if test="dbName == 'oracle'">'%'||#{catalogNames}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{catalogNames}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{catalogNames},'%')</if>
+			</if>
+			<if test="difficulty != null and difficulty != ''">
+				AND a.difficulty = #{difficulty}
+			</if>
+			<if test="equipmentType != null and equipmentType != ''">
+				AND a.equipment_type = #{equipmentType}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Movement">
+		SELECT 
+			<include refid="movementColumns"/>
+		FROM b_movement a
+		<include refid="movementJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_movement(
+			id,
+			name,
+			catalog_ids,
+			catalog_names,
+			catalog1_id,
+			catalog1_name,
+			catalog2_id,
+			catalog2_name,
+			difficulty,
+			equipment_type,
+			zengji_group_num,
+			suxing_group_num,
+			jianzhi_group_num,
+			zengji_movement_num,
+			suxing_movement_num,
+			jianzhi_movement_num,
+			prepare_img_url,
+			action_img_url,
+			introduction,
+			end_main_point,
+			coach_tip,
+			common_fault,
+			prepare,
+			action,
+			pelvic_stability,
+			core_activation,
+			respiratory_reconstruction,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{name},
+			#{catalogIds},
+			#{catalogNames},
+			#{catalog1Id},
+			#{catalog1Name},
+			#{catalog2Id},
+			#{catalog2Name},
+			#{difficulty},
+			#{equipmentType},
+			#{zengjiGroupNum},
+			#{suxingGroupNum},
+			#{jianzhiGroupNum},
+			#{zengjiMovementNum},
+			#{suxingMovementNum},
+			#{jianzhiMovementNum},
+			#{prepareImgUrl},
+			#{actionImgUrl},
+			#{introduction},
+			#{endMainPoint},
+			#{coachTip},
+			#{commonFault},
+			#{prepare},
+			#{action},
+			#{pelvicStability},
+			#{coreActivation},
+			#{respiratoryReconstruction},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_movement SET 	
+			name = #{name},
+			catalog_ids = #{catalogIds},
+			catalog_names = #{catalogNames},
+			catalog1_id = #{catalog1Id},
+			catalog1_name = #{catalog1Name},
+			catalog2_id = #{catalog2Id},
+			catalog2_name = #{catalog2Name},
+			difficulty = #{difficulty},
+			equipment_type = #{equipmentType},
+			zengji_group_num = #{zengjiGroupNum},
+			suxing_group_num = #{suxingGroupNum},
+			jianzhi_group_num = #{jianzhiGroupNum},
+			zengji_movement_num = #{zengjiMovementNum},
+			suxing_movement_num = #{suxingMovementNum},
+			jianzhi_movement_num = #{jianzhiMovementNum},
+			prepare_img_url = #{prepareImgUrl},
+			action_img_url = #{actionImgUrl},
+			introduction = #{introduction},
+			end_main_point = #{endMainPoint},
+			coach_tip = #{coachTip},
+			common_fault = #{commonFault},
+			prepare = #{prepare},
+			action = #{action},
+			pelvic_stability = #{pelvicStability},
+			core_activation = #{coreActivation},
+			respiratory_reconstruction = #{respiratoryReconstruction},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_movement SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

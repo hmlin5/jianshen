@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_bmi_course.dao.BmiCourseDao">
+    
+	<sql id="bmiCourseColumns">
+		a.id AS "id",
+		a.creator_type AS "creatorType",
+		a.zengji_min AS "zengjiMin",
+		a.zengji_max AS "zengjiMax",
+		a.suxing_min AS "suxingMin",
+		a.suxing_max AS "suxingMax",
+		a.jianzhi_min AS "jianzhiMin",
+		a.jianzhi_max AS "jianzhiMax",
+		a.to_user_id AS "toUserId",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.user_id AS "userId",
+		a.zengji_base AS "zengjiBase",
+		a.suxing_base AS "suxingBase",
+		a.jianzhi_base AS "jianzhiBase"
+	</sql>
+	
+	<sql id="bmiCourseJoins">
+	</sql>
+    
+	<select id="get" resultType="BmiCourse">
+		SELECT 
+			<include refid="bmiCourseColumns"/>
+		FROM b_bmi_course a
+		<include refid="bmiCourseJoins"/>
+		<where> <if test="id != null and id != ''">
+				and a.id = #{id}
+			</if>
+		 <if test="userId != null and userId != ''">
+				and a.user_id = #{userId}
+			</if>
+		 <if test="toUserId != null and toUserId != ''">
+				and a.to_user_id = #{toUserId}
+			</if>
+			</where>
+	</select>
+	
+	<select id="findList" resultType="BmiCourse">
+		SELECT 
+			<include refid="bmiCourseColumns"/>
+		FROM b_bmi_course a
+		<include refid="bmiCourseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="creatorType != null and creatorType != ''">
+				AND a.creator_type = #{creatorType}
+			</if>
+			<if test="toUserId != null and toUserId != ''">
+				AND a.to_user_id = #{toUserId}
+			</if>
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BmiCourse">
+		SELECT 
+			<include refid="bmiCourseColumns"/>
+		FROM b_bmi_course a
+		<include refid="bmiCourseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_bmi_course(
+			id,
+			creator_type,
+			zengji_min,
+			zengji_max,
+			suxing_min,
+			suxing_max,
+			jianzhi_min,
+			jianzhi_max,
+			to_user_id,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag,
+			user_id,
+			zengji_base,
+			suxing_base,
+			jianzhi_base
+		) VALUES (
+			#{id},
+			#{creatorType},
+			#{zengjiMin},
+			#{zengjiMax},
+			#{suxingMin},
+			#{suxingMax},
+			#{jianzhiMin},
+			#{jianzhiMax},
+			#{toUserId},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag},
+			#{userId},
+			#{zengjiBase},
+			#{suxingBase},
+			#{jianzhiBase}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_bmi_course SET 	
+			creator_type = #{creatorType},
+			zengji_min = #{zengjiMin},
+			zengji_max = #{zengjiMax},
+			suxing_min = #{suxingMin},
+			suxing_max = #{suxingMax},
+			jianzhi_min = #{jianzhiMin},
+			jianzhi_max = #{jianzhiMax},
+			to_user_id = #{toUserId},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks},
+			user_id = #{userId},
+			zengji_base= #{zengjiBase},
+			suxing_base= #{suxingBase},
+			jianzhi_base= #{jianzhiBase}
+		WHERE id = #{id}
+	</update>
+	<update id="updateAll">
+		UPDATE b_bmi_course SET 	
+			zengji_min = #{zengjiMin},
+			zengji_max = #{zengjiMax},
+			suxing_min = #{suxingMin},
+			suxing_max = #{suxingMax},
+			jianzhi_min = #{jianzhiMin},
+			jianzhi_max = #{jianzhiMax}
+	</update>
+	<update id="delete">
+		UPDATE b_bmi_course SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	<delete id="deletes">
+		DELETE FROM b_bmi_course WHERE id = #{id}
+	</delete>
+	
+</mapper>

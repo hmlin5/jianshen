@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_withdraw.dao.CashOrderDao">
+    
+	<sql id="cashOrderColumns">
+		a.id AS "id",
+		a.order_num AS "orderNum",
+		a.gym_id AS "gymId",
+		a.gym_name AS "gymName",
+		a.coach_id AS "coachId",
+		a.coach_name AS "coachName",
+		a.apply_time AS "applyTime",
+		a.phone AS "phone",
+		a.bank_account AS "bankAccount",
+		a.withdraw_amount AS "withdrawAmount",
+		a.withdraw_status AS "withdrawStatus",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="cashOrderJoins">
+	</sql>
+    
+	<select id="get" resultType="CashOrder">
+		SELECT 
+			<include refid="cashOrderColumns"/>
+		FROM cash_order a
+		<include refid="cashOrderJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CashOrder">
+		SELECT 
+			<include refid="cashOrderColumns"/>
+		FROM cash_order a
+		<include refid="cashOrderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orderNum != null and orderNum != ''">
+				AND a.order_num LIKE 
+					<if test="dbName == 'oracle'">'%'||#{orderNum}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{orderNum}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{orderNum},'%')</if>
+			</if>
+			<if test="coachName != null and coachName != ''">
+				AND a.coach_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{coachName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{coachName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{coachName},'%')</if>
+			</if>
+			<if test="beginApplyTime != null and endApplyTime != null and beginApplyTime != '' and endApplyTime != ''">
+				AND a.apply_time BETWEEN #{beginApplyTime} AND #{endApplyTime}
+			</if>
+			<if test="phone != null and phone != ''">
+				AND a.phone LIKE 
+					<if test="dbName == 'oracle'">'%'||#{phone}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{phone}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{phone},'%')</if>
+			</if>
+			<if test="withdrawStatus != null and withdrawStatus != ''">
+				AND a.withdraw_status = #{withdrawStatus}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CashOrder">
+		SELECT 
+			<include refid="cashOrderColumns"/>
+		FROM cash_order a
+		<include refid="cashOrderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO cash_order(
+			id,
+			order_num,
+			gym_id,
+			gym_name,
+			coach_id,
+			coach_name,
+			apply_time,
+			phone,
+			bank_account,
+			withdraw_amount,
+			withdraw_status,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{orderNum},
+			#{gymId},
+			#{gymName},
+			#{coachId},
+			#{coachName},
+			#{applyTime},
+			#{phone},
+			#{bankAccount},
+			#{withdrawAmount},
+			#{withdrawStatus},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE cash_order SET 	
+			order_num = #{orderNum},
+			gym_id = #{gymId},
+			gym_name = #{gymName},
+			coach_id = #{coachId},
+			coach_name = #{coachName},
+			apply_time = #{applyTime},
+			phone = #{phone},
+			bank_account = #{bankAccount},
+			withdraw_amount = #{withdrawAmount},
+			withdraw_status = #{withdrawStatus},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE cash_order SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_feedback.dao.FeedbackDao">
+    
+	<sql id="feedbackColumns">
+		a.id AS "id",
+		a.feedback_type AS "feedbackType",
+		a.feedback_time AS "feedbackTime",
+		a.feedback_phone AS "feedbackPhone",
+		a.feedback_person AS "feedbackPerson",
+		a.feedback_title AS "feedbackTitle",
+		a.feedback_content AS "feedbackContent",
+		a.reply_status AS "replyStatus",
+		a.reply_time AS "replyTime",
+		a.reply_person AS "replyPerson",
+		a.reply_content AS "replyContent",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.picture_url AS "pictureUrl",
+		a.feedback_user_id AS "feedbackUserId",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="feedbackJoins">
+	</sql>
+    
+	<select id="get" resultType="Feedback">
+		SELECT 
+			<include refid="feedbackColumns"/>
+		FROM b_feedback a
+		<include refid="feedbackJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Feedback">
+		SELECT 
+			<include refid="feedbackColumns"/>
+		FROM b_feedback a
+		<include refid="feedbackJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="feedbackType != null and feedbackType != '' and feedbackType !=0">
+				AND a.feedback_type = #{feedbackType}
+			</if>
+			<if test="beginFeedbackTime != null and endFeedbackTime != null and beginFeedbackTime != '' and endFeedbackTime != ''">
+				AND a.feedback_time BETWEEN #{beginFeedbackTime} AND #{endFeedbackTime}
+			</if>
+			<if test="feedbackPhone != null and feedbackPhone != ''">
+				AND a.feedback_phone LIKE 
+					<if test="dbName == 'oracle'">'%'||#{feedbackPhone}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{feedbackPhone}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{feedbackPhone},'%')</if>
+			</if>
+			<if test="feedbackContent != null and feedbackContent != ''">
+				AND a.feedback_content LIKE 
+					<if test="dbName == 'oracle'">'%'||#{feedbackContent}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{feedbackContent}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{feedbackContent},'%')</if>
+			</if>
+			<if test="replyStatus != null and replyStatus != ''">
+				AND a.reply_status = #{replyStatus}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.feedback_time DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Feedback">
+		SELECT 
+			<include refid="feedbackColumns"/>
+		FROM b_feedback a
+		<include refid="feedbackJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_feedback(
+			id,
+			feedback_type,
+			feedback_time,
+			feedback_phone,
+			feedback_person,
+			feedback_title,
+			feedback_content,
+			reply_status,
+			reply_time,
+			reply_person,
+			reply_content,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			picture_url,
+			feedback_user_id,
+			del_flag
+		) VALUES (
+			#{id},
+			#{feedbackType},
+			#{feedbackTime},
+			#{feedbackPhone},
+			#{feedbackPerson},
+			#{feedbackTitle},
+			#{feedbackContent},
+			#{replyStatus},
+			#{replyTime},
+			#{replyPerson},
+			#{replyContent},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{pictureUrl},
+			#{feedbackUserId},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_feedback SET 	
+			feedback_type = #{feedbackType},
+			feedback_time = #{feedbackTime},
+			feedback_phone = #{feedbackPhone},
+			feedback_person = #{feedbackPerson},
+			feedback_title = #{feedbackTitle},
+			feedback_content = #{feedbackContent},
+			reply_status = #{replyStatus},
+			reply_time = #{replyTime},
+			reply_person = #{replyPerson},
+			reply_content = #{replyContent},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			picture_url = #{pictureUrl},
+			feedback_user_id = #{feedbackUserId},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_feedback SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

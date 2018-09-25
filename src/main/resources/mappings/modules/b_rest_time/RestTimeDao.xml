@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_rest_time.dao.RestTimeDao">
+    
+	<sql id="restTimeColumns">
+		a.id AS "id",
+		
+		b.user_name AS "coachName",
+		
+		a.user_id AS "userId",
+		a.gym_id AS "gymId",
+		a.rest_start_time AS "restStartTime",
+		a.rest_end_time AS "restEndTime",
+		a.duration AS "duration",
+		a.day_of_week AS "dayOfWeek",
+		a.rest_date AS "restDate",
+		a.all_day_rest AS "allDayRest",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="restTimeJoins">
+	</sql>
+    
+	<select id="get" resultType="RestTime">
+		SELECT 
+			<include refid="restTimeColumns"/>
+		FROM b_rest_time a,b_user_gym b
+		<include refid="restTimeJoins"/>
+		WHERE a.id = #{id} and a.user_id=b.user_id and a.gym_id=b.gym_id
+	</select>
+	
+	<select id="findList" resultType="RestTime">
+		SELECT 
+			<include refid="restTimeColumns"/>
+		FROM b_rest_time a,b_user_gym b
+		<include refid="restTimeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} and a.user_id=b.user_id and a.gym_id=b.gym_id
+			<if test="sqlCheckTimeConflictFlag and beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+				AND NOT ((a.rest_end_time &lt; #{beginTime}) OR (a.rest_start_time &gt; #{endTime}))
+			</if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="gymId != null and gymId != ''">
+				AND a.gym_id = #{gymId}
+			</if>
+			<if test="restStartTime != null and restStartTime != ''">
+				AND a.rest_start_time &gt;= #{restStartTime}
+			</if>
+			<if test="restEndTime != null and restEndTime != ''">
+				AND a.rest_end_time &lt;= #{restEndTime}
+			</if>
+			<if test="duration != null and duration != ''">
+				AND a.duration &gt; #{duration}
+			</if>
+			<if test="dayOfWeek != null and dayOfWeek != ''">
+				AND a.day_of_week = #{dayOfWeek}
+			</if>
+			<if test="restDate != null and restDate != ''">
+				AND a.rest_date = #{restDate}
+			</if>
+			<if test="allDayRest != null and allDayRest != ''">
+				AND a.all_day_rest = #{allDayRest}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.rest_start_time ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findDistinctList" resultType="String">
+		SELECT 
+			distinct (
+						a.user_id
+					)
+		FROM b_rest_time a
+		<include refid="restTimeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="sqlCheckTimeConflictFlag and beginTime != null and beginTime != '' and endTime != null and endTime != '' and allDayRest != null and allDayRest != ''">
+				AND ( (NOT ((a.rest_end_time &lt; #{beginTime}) OR (a.rest_start_time &gt; #{endTime}))) OR (a.all_day_rest = #{allDayRest})) 
+			</if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="gymId != null and gymId != ''">
+				AND a.gym_id = #{gymId}
+			</if>
+			<if test="restStartTime != null and restStartTime != ''">
+				AND a.rest_start_time &gt;= #{restStartTime}
+			</if>
+			<if test="restEndTime != null and restEndTime != ''">
+				AND a.rest_end_time &lt;= #{restEndTime}
+			</if>
+			<if test="dayOfWeek != null and dayOfWeek != ''">
+				AND a.day_of_week = #{dayOfWeek}
+			</if>
+			<if test="restDate != null and restDate != ''">
+				AND a.rest_date = #{restDate}
+			</if>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.rest_start_time ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	<select id="findAllList" resultType="RestTime">
+		SELECT 
+			<include refid="restTimeColumns"/>
+		FROM b_rest_time a
+		<include refid="restTimeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_rest_time(
+			id,
+			user_id,
+			gym_id,
+			rest_start_time,
+			rest_end_time,
+			duration,
+			day_of_week,
+			rest_date,
+			all_day_rest,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userId},
+			#{gymId},
+			#{restStartTime},
+			#{restEndTime},
+			#{duration},
+			#{dayOfWeek},
+			#{restDate},
+			#{allDayRest},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_rest_time SET 	
+			user_id = #{userId},
+			gym_id = #{gymId},
+			rest_start_time =#{restStartTime},
+			rest_end_time =#{restEndTime},
+			duration = #{duration},
+			day_of_week = #{dayOfWeek},
+			rest_date =#{restDate},
+			all_day_rest = #{allDayRest},
+			update_date =#{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+			
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_rest_time SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	
+	<update id="deleteList"  parameterType="java.util.List">
+		UPDATE b_rest_time SET 
+			del_flag = 1
+		WHERE id in 
+		<foreach collection="list" index="index" item="item" open="(" close=")" separator=",">  
+            #{item.id}  
+        </foreach>  
+        
+	</update>
+	
+	
+	
+	
+	
+</mapper>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_user_account.dao.UserAccountDao">
+    
+	<sql id="userAccountColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.total_amount AS "totalAmount",
+		a.usable_amount AS "usableAmount",
+		a.withdraw_amount AS "withdrawAmount",
+		a.pay_pwd AS "payPwd",
+		a.freeze_amount AS "freezeAmount",
+		a.default_bankcard_id AS "defaultBankCardId",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="userAccountJoins">
+	</sql>
+    
+	<select id="get" resultType="UserAccount">
+		SELECT 
+			<include refid="userAccountColumns"/>
+		FROM b_user_account a
+		<include refid="userAccountJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="UserAccount">
+		SELECT 
+			<include refid="userAccountColumns"/>
+		FROM b_user_account a
+		<include refid="userAccountJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="totalAmount != null and totalAmount != ''">
+				AND a.total_amount = #{totalAmount}
+			</if>
+			<if test="usableAmount != null and usableAmount != ''">
+				AND a.usable_amount = #{usableAmount}
+			</if>
+			<if test="withdrawAmount != null and withdrawAmount != ''">
+				AND a.withdraw_amount = #{withdrawAmount}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="UserAccount">
+		SELECT 
+			<include refid="userAccountColumns"/>
+		FROM b_user_account a
+		<include refid="userAccountJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO b_user_account(
+			id,
+			user_id,
+			total_amount,
+			usable_amount,
+			withdraw_amount,
+			pay_pwd,
+			freeze_amount,
+			default_bankcard_id,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userId},
+			#{totalAmount},
+			#{usableAmount},
+			#{withdrawAmount},
+			#{payPwd},
+			#{freezeAmount},
+			#{defaultBankCardId},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_user_account SET 	
+			user_id = #{userId},
+			total_amount = #{totalAmount},
+			usable_amount = #{usableAmount},
+			withdraw_amount = #{withdrawAmount},
+			pay_pwd = #{payPwd},
+			freeze_amount = #{freezeAmount},
+			default_bankcard_id = #{defaultBankCardId},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE b_user_account SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

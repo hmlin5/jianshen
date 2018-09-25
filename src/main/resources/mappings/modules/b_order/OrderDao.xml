@@ -1,0 +1,702 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gimc.user.modules.b_order.dao.OrderDao">
+    
+	<sql id="orderColumns">
+		a.id AS "id",
+		a.order_num AS "orderNum",
+		a.gym_name AS "gymName",
+		a.stu_id AS "stuId",
+		a.stu_name AS "stuName",
+		a.stu_phone AS "stuPhone",
+		a.stu_level AS "stuLevel",
+		a.stu_img_url AS "stuImgUrl",
+		a.stu_sex AS "stuSex",
+		a.coach_id AS "coachId",
+		a.coach_name AS "coachName",
+		a.coach_phone AS "coachPhone",
+		a.coach_sex AS "coachSex",
+		a.type AS "type",
+		a.is_confirm AS "isConfirm",
+		a.can_evaluate AS "canEvaluate",
+		a.op_record AS "opRecord",
+		a.appointment_time AS "appointmentTime",
+		a.class_name AS "className",
+		a.coach_label AS "coachLabel",
+		a.coach_img_url AS "coachImgUrl",
+		a.comment AS "comment",
+		a.add_fee AS "addFee",
+		a.start_time AS "startTime",
+		a.end_time AS "endTime",
+		a.course_duration AS "courseDuration",
+		a.course_id AS "courseId",
+		a.gym_id AS "gymId",
+		a.status AS "status",
+		a.version AS "version",
+		a.coach_reply AS "coachReply",
+		a.cancelor AS "cancelor",
+		a.cancel_time AS "cancelTime",
+		a.cancel_reason AS "cancelReason",
+		a.coach_score AS "coachScore",
+		a.rob_time AS "RobTime",
+		a.stu_ids AS "stuIds",
+		a.stu_names AS "stuNames",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.gym_time AS "gymTime",
+		a.platform_time AS "platformTime",
+		a.is_gym AS "isGym",
+		a.member_price AS "memberPrice",
+		a.coach_proportion AS "coachProportion"
+	</sql>
+	
+	<sql id="rankColumns">
+		o.id AS "id",
+		o.order_num AS "orderNum",
+		o.gym_name AS "gymName",
+		o.stu_id AS "stuId",
+		o.stu_name AS "stuName",
+		o.stu_phone AS "stuPhone",
+		o.stu_level AS "stuLevel",
+		o.stu_img_url AS "stuImgUrl",
+		o.stu_sex AS "stuSex",
+		o.coach_id AS "coachId",
+		o.coach_name AS "coachName",
+		o.coach_phone AS "coachPhone",
+		o.coach_sex AS "coachSex",
+		o.type AS "type",
+		o.is_confirm AS "isConfirm",
+		o.can_evaluate AS "canEvaluate",
+		o.op_record AS "opRecord",
+		o.appointment_time AS "appointmentTime",
+		o.class_name AS "className",
+		o.coach_label AS "coachLabel",
+		o.coach_img_url AS "coachImgUrl",
+		o.comment AS "comment",
+		o.add_fee AS "addFee",
+		o.start_time AS "startTime",
+		o.end_time AS "endTime",
+		o.course_duration AS "courseDuration",
+		o.course_id AS "courseId",
+		o.gym_id AS "gymId",
+		o.status AS "status",
+		o.version AS "version",
+		o.coach_reply AS "coachReply",
+		o.cancelor AS "cancelor",
+		o.cancel_time AS "cancelTime",
+		o.cancel_reason AS "cancelReason",
+		o.coach_score AS "coachScore",
+		o.rob_time AS "RobTime",
+		o.stu_ids AS "stuIds",
+		o.stu_names AS "stuNames",
+		o.create_date AS "createDate",
+		o.update_date AS "updateDate",
+		o.create_by AS "createBy.id",
+		o.update_by AS "updateBy.id",
+		o.remarks AS "remarks",
+		o.del_flag AS "delFlag"
+
+	</sql>
+	
+	
+	<sql id="orderJoins">
+	</sql>
+    
+	<select id="get" resultType="Order">
+		SELECT 
+			<include refid="orderColumns"/>
+		FROM b_order a
+		<include refid="orderJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Order">
+		SELECT 
+			<include refid="orderColumns"/>
+		FROM b_order a
+		<include refid="orderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orderNum != null and orderNum != ''">
+				AND a.order_num = #{orderNum}
+			</if>
+			<if test="gymName != null and gymName != ''">
+				AND a.gym_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{gymName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{gymName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{gymName},'%')</if>
+			</if>
+			<if test="stuId != null and stuId != '' and !containFlag and !allCheckFlag">
+				AND a.stu_id = #{stuId}
+			</if>
+			<if test="stuId != null and stuId != '' and containFlag and !allCheckFlag">
+				AND FIND_IN_SET(#{stuId},stu_ids)
+			</if>
+			<if test="stuId != null and stuId != '' and containFlag and allCheckFlag">
+				AND ( (FIND_IN_SET(#{stuId},stu_ids) AND a.status = 1) OR a.stu_id = #{stuId})
+			</if>
+			<if test="stuName != null and stuName != ''">
+				AND a.stu_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{stuName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{stuName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{stuName},'%')</if>
+			</if>
+			<if test="stuPhone != null and stuPhone != ''">
+				AND a.stu_phone LIKE 
+					<if test="dbName == 'oracle'">'%'||#{stuPhone}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{stuPhone}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{stuPhone},'%')</if>
+			</if>
+			<if test="stuLevel != null and stuLevel != ''">
+				AND a.stu_level = #{stuLevel}
+			</if>
+			<if test="stuImgUrl != null and stuImgUrl != ''">
+				AND a.stu_img_url = #{stuImgUrl}
+			</if>
+			<if test="stuSex != null and stuSex != ''">
+				AND a.stu_sex = #{stuSex}
+			</if>
+			<if test="coachId != null and coachId != '' and !orNullFlag">
+				AND a.coach_id = #{coachId}
+			</if>
+			<if test="orNullFlag">
+				AND ( a.coach_id = #{coachId} OR (a.coach_id is null AND a.status NOT IN (6))  )
+			</if>
+			<if test="coachName != null and coachName != ''">
+				AND a.coach_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{coachName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{coachName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{coachName},'%')</if>
+			</if>
+			<if test="coachPhone != null and coachPhone != ''">
+				AND a.coach_phone LIKE 
+					<if test="dbName == 'oracle'">'%'||#{coachPhone}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{coachPhone}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{coachPhone},'%')</if>
+			</if>
+			<if test="coachSex != null and coachSex != ''">
+				AND a.coach_sex = #{coachSex}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="beginAppointmentTime != null and endAppointmentTime != null and beginAppointmentTime != '' and endAppointmentTime != ''">
+				AND a.appointment_time BETWEEN #{beginAppointmentTime} AND #{endAppointmentTime}
+			</if>
+			<if test="addFee != null and addFee != ''">
+				AND a.add_fee = #{addFee}
+			</if>
+			<if test="courseDuration != null and courseDuration != ''">
+				AND a.course_duration = #{courseDuration}
+			</if>
+			<if test="courseId != null and courseId != ''">
+				AND a.course_id = #{courseId}
+			</if>
+			<if test="gymId != null and gymId != ''">
+				AND a.gym_id = #{gymId}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="isConfirm != null and isConfirm != ''">
+				AND a.is_confirm = #{isConfirm}
+			</if>
+			<if test="isGym != null and isGym != ''">
+				AND a.is_Gym = #{isGym}
+			</if>
+			<if test="version != null and version != ''">
+				AND a.version = #{version}
+			</if>
+			<if test="includeStatus != null and includeStatus.size()>0">
+				AND a.status IN
+				<foreach collection="includeStatus" index="index" item="status" open="(" close=")" separator=",">  
+		            #{status}  
+		        </foreach>   
+			</if>
+			<if test="excludeStatus != null and excludeStatus.size()>0">
+				AND a.status NOT IN
+				<foreach collection="excludeStatus" index="index" item="status" open="(" close=")" separator=",">  
+		            #{status}  
+		        </foreach>   
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="settlementList" resultType="Order">
+		SELECT
+		<include refid="orderColumns"/>
+		FROM b_order a
+		<include refid="orderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="isConfirm != null and isConfirm != ''">
+				AND a.is_confirm = #{isConfirm}
+			</if>
+			<if test="isGym != null and isGym != ''">
+				AND a.is_gym = #{isGym}
+			</if>
+			<if test="orderNum != null and orderNum != ''">
+				AND a.order_num = #{orderNum}
+			</if>
+			<if test="gymName != null and gymName != ''">
+				AND a.gym_name LIKE
+				<if test="dbName == 'oracle'">'%'||#{gymName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{gymName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{gymName},'%')</if>
+			</if>
+			<if test="stuId != null and stuId != '' and !containFlag and !allCheckFlag">
+				AND a.stu_id = #{stuId}
+			</if>
+			<if test="stuId != null and stuId != '' and containFlag and !allCheckFlag">
+				AND FIND_IN_SET(#{stuId},stu_ids)
+			</if>
+			<if test="stuId != null and stuId != '' and containFlag and allCheckFlag">
+				AND ( (FIND_IN_SET(#{stuId},stu_ids) AND a.status = 1) OR a.stu_id = #{stuId})
+			</if>
+			<if test="stuName != null and stuName != ''">
+				AND a.stu_name LIKE
+				<if test="dbName == 'oracle'">'%'||#{stuName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{stuName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{stuName},'%')</if>
+			</if>
+			<if test="stuPhone != null and stuPhone != ''">
+				AND a.stu_phone LIKE
+				<if test="dbName == 'oracle'">'%'||#{stuPhone}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{stuPhone}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{stuPhone},'%')</if>
+			</if>
+			<if test="stuLevel != null and stuLevel != ''">
+				AND a.stu_level = #{stuLevel}
+			</if>
+			<if test="stuImgUrl != null and stuImgUrl != ''">
+				AND a.stu_img_url = #{stuImgUrl}
+			</if>
+			<if test="stuSex != null and stuSex != ''">
+				AND a.stu_sex = #{stuSex}
+			</if>
+			<if test="coachId != null and coachId != '' and !orNullFlag">
+				AND a.coach_id = #{coachId}
+			</if>
+			<if test="orNullFlag">
+				AND ( a.coach_id = #{coachId} OR (a.coach_id is null AND a.status NOT IN (6))  )
+			</if>
+			<if test="coachName != null and coachName != ''">
+				AND a.coach_name LIKE
+				<if test="dbName == 'oracle'">'%'||#{coachName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{coachName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{coachName},'%')</if>
+			</if>
+			<if test="coachPhone != null and coachPhone != ''">
+				AND a.coach_phone LIKE
+				<if test="dbName == 'oracle'">'%'||#{coachPhone}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{coachPhone}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{coachPhone},'%')</if>
+			</if>
+			<if test="coachSex != null and coachSex != ''">
+				AND a.coach_sex = #{coachSex}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="beginAppointmentTime != null and endAppointmentTime != null and beginAppointmentTime != '' and endAppointmentTime != ''">
+				AND a.appointment_time BETWEEN #{beginAppointmentTime} AND #{endAppointmentTime}
+			</if>
+			<if test="addFee != null and addFee != ''">
+				AND a.add_fee = #{addFee}
+			</if>
+			<if test="courseDuration != null and courseDuration != ''">
+				AND a.course_duration = #{courseDuration}
+			</if>
+			<if test="courseId != null and courseId != ''">
+				AND a.course_id = #{courseId}
+			</if>
+			<if test="gymId != null and gymId != ''">
+				AND a.gym_id = #{gymId}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="isConfirm != null and isConfirm != ''">
+				AND a.is_confirm = #{isConfirm}
+			</if>
+			<if test="version != null and version != ''">
+				AND a.version = #{version}
+			</if>
+			<if test="includeStatus != null and includeStatus.size()>0">
+				AND a.status IN
+				<foreach collection="includeStatus" index="index" item="status" open="(" close=")" separator=",">
+					#{status}
+				</foreach>
+			</if>
+			<if test="excludeStatus != null and excludeStatus.size()>0">
+				AND a.status NOT IN
+				<foreach collection="excludeStatus" index="index" item="status" open="(" close=")" separator=",">
+					#{status}
+				</foreach>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+
+	
+	
+	
+	<select id="searchOrder" resultType="Order">
+		SELECT 
+			<include refid="orderColumns"/>
+		FROM b_order a
+		<where>
+			
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			AND
+			(
+				<if test="className != null and className != ''">
+					a.class_name LIKE 
+						<if test="dbName == 'oracle'">'%'||#{className}||'%'</if>
+						<if test="dbName == 'mssql'">'%'+#{className}+'%'</if>
+						<if test="dbName == 'mysql'">concat('%',#{className},'%')</if>
+				</if>
+				<if test="stuName != null and stuName != ''">
+					OR a.stu_name LIKE 
+						<if test="dbName == 'oracle'">'%'||#{stuName}||'%'</if>
+						<if test="dbName == 'mssql'">'%'+#{stuName}+'%'</if>
+						<if test="dbName == 'mysql'">concat('%',#{stuName},'%')</if>
+				</if>
+				
+				<if test="coachName != null and coachName != ''">
+					OR a.coach_name LIKE 
+						<if test="dbName == 'oracle'">'%'||#{coachName}||'%'</if>
+						<if test="dbName == 'mssql'">'%'+#{coachName}+'%'</if>
+						<if test="dbName == 'mysql'">concat('%',#{coachName},'%')</if>
+				</if>
+				<if test="gymName != null and gymName != ''">
+					OR a.gym_name LIKE 
+						<if test="dbName == 'oracle'">'%'||#{gymName}||'%'</if>
+						<if test="dbName == 'mssql'">'%'+#{gymName}+'%'</if>
+						<if test="dbName == 'mysql'">concat('%',#{gymName},'%')</if>
+				</if>
+				
+			)
+			<if test="gymId != null and gymId != ''">
+				AND a.gym_id = #{gymId}
+			</if>
+			<if test="stuId != null and stuId != '' and !containFlag and !allCheckFlag">
+				AND a.stu_id = #{stuId}
+			</if>
+			<if test="stuId != null and stuId != '' and containFlag and !allCheckFlag">
+				AND FIND_IN_SET(#{stuId},stu_ids)
+			</if>
+			<if test="stuId != null and stuId != '' and containFlag and allCheckFlag">
+				AND (FIND_IN_SET(#{stuId},stu_ids) OR a.stu_id = #{stuId})
+			</if>
+			<if test="coachId != null and coachId != '' and !orNullFlag">
+				AND a.coach_id = #{coachId}
+			</if>
+			<if test="orNullFlag">
+				AND ( a.coach_id = #{coachId} OR (a.coach_id is null AND a.status NOT IN (6))  )
+			</if>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	
+	<select id="findRankList" resultType="Order">
+		SELECT  
+			(@rowNum:=@rowNum+1) rank, t.* 
+		FROM 
+		(SELECT SUM(o.course_duration) totalCourseTime,o.* FROM b_order o 
+		<where>
+			<if test="includeStatus != null and includeStatus.size()>0">
+				AND o.status IN
+				<foreach collection="includeStatus" index="index" item="status" open="(" close=")" separator=",">  
+		            #{status}  
+		        </foreach>   
+			</if>
+			<if test="gymId != null and gymId != ''">
+				AND o.gym_id = #{gymId}
+			</if>
+		  
+		</where>
+		<choose>
+			<when test="rankObject !=null and rankObject != ''">
+				 GROUP BY ${rankObject} ORDER BY totalCourseTime DESC) t,
+			</when>
+			<otherwise>
+				 GROUP BY stu_id ORDER BY totalCourseTime DESC) t,
+			</otherwise>
+		</choose>
+		(SELECT (@rowNum :=0) ) b
+	</select>
+	
+	
+	
+	<select id="findAllList" resultType="Order">
+		SELECT 
+			<include refid="orderColumns"/>
+		FROM b_order a
+		<include refid="orderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="Order">
+		INSERT INTO b_order(
+			id,
+			order_num,
+			gym_name,
+			stu_id,
+			stu_name,
+			stu_phone,
+			stu_level,
+			stu_img_url,
+			stu_sex,
+			coach_id,
+			coach_name,
+			coach_phone,
+			coach_sex,
+			type,
+			is_confirm,
+			can_evaluate,
+			op_record,
+			appointment_time,
+			class_name,
+			coach_label,
+			coach_img_url,
+			comment,
+			add_fee,
+			start_time,
+			end_time,
+			course_duration,
+			course_id,
+			gym_id,
+			status,
+			version,
+			coach_reply,
+			cancelor,
+			cancel_time,
+			cancel_reason,
+			coach_score,
+			rob_time,
+			stu_ids,
+			stu_names,
+			create_date,
+			update_date,
+			create_by,
+			update_by,
+			remarks,
+			del_flag,
+			gym_time,
+			platform_time,
+			is_gym,
+			member_price,
+			coach_proportion
+		) VALUES (
+			#{id},
+			#{orderNum},
+			#{gymName},
+			#{stuId},
+			#{stuName},
+			#{stuPhone},
+			#{stuLevel},
+			#{stuImgUrl},
+			#{stuSex},
+			#{coachId},
+			#{coachName},
+			#{coachPhone},
+			#{coachSex},
+			#{type},
+			#{isConfirm},
+			#{canEvaluate},
+			#{opRecord},
+			#{appointmentTime},
+			#{className},
+			#{coachLabel},
+			#{coachImgUrl},
+			#{comment},
+			#{addFee},
+			#{startTime},
+			#{endTime},
+			#{courseDuration},
+			#{courseId},
+			#{gymId},
+			#{status},
+			#{version},
+			#{coachReply},
+			#{cancelor},
+			#{cancelTime},
+			#{cancelReason},
+			#{coachScore},
+			#{RobTime},
+			#{stuIds},
+			#{stuNames},
+			#{createDate},
+			#{updateDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag},
+			#{gymTime},
+			#{platformTime},
+			#{isGym},
+			#{memberPrice},
+			#{coachProportion}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE b_order SET 	
+			order_num = #{orderNum},
+			gym_name = #{gymName},
+			stu_id = #{stuId},
+			stu_name = #{stuName},
+			stu_phone = #{stuPhone},
+			stu_level = #{stuLevel},
+			stu_img_url = #{stuImgUrl},
+			stu_sex = #{stuSex},
+			coach_id = #{coachId},
+			coach_name = #{coachName},
+			coach_phone = #{coachPhone},
+			coach_sex = #{coachSex},
+			type = #{type},
+			is_confirm = #{isConfirm},
+			can_evaluate = #{canEvaluate},
+			op_record = #{opRecord},
+			appointment_time = #{appointmentTime},
+			class_name = #{className},
+			coach_label = #{coachLabel},
+			coach_img_url = #{coachImgUrl},
+			comment = #{comment},
+			add_fee = #{addFee},
+			start_time = #{startTime},
+			end_time = #{endTime},
+			course_duration = #{courseDuration},
+			course_id = #{courseId},
+			gym_id = #{gymId},
+			status = #{status},
+			version = #{version},
+			coach_reply = #{coachReply},
+			cancelor = #{cancelor},
+			cancel_time = #{cancelTime},
+			cancel_reason = #{cancelReason},
+			coach_score = #{coachScore},
+			rob_time = #{RobTime},
+			stu_ids = #{stuIds},
+			stu_names = #{stuNames},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks},
+			gym_time = #{gymTime},
+			platform_time = #{platformTime},
+			is_gym = #{isGym}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="updateRobOrder">
+		UPDATE b_order SET 	
+			order_num = #{orderNum},
+			gym_name = #{gymName},
+			stu_id = #{stuId},
+			stu_name = #{stuName},
+			stu_phone = #{stuPhone},
+			stu_level = #{stuLevel},
+			stu_img_url = #{stuImgUrl},
+			stu_sex = #{stuSex},
+			coach_id = #{coachId},
+			coach_name = #{coachName},
+			coach_phone = #{coachPhone},
+			coach_sex = #{coachSex},
+			type = #{type},
+			is_confirm = #{isConfirm},
+			can_evaluate = #{canEvaluate},
+			op_record = #{opRecord},
+			appointment_time = #{appointmentTime},
+			class_name = #{className},
+			coach_label = #{coachLabel},
+			coach_img_url = #{coachImgUrl},
+			comment = #{comment},
+			add_fee = #{addFee},
+			start_time = #{startTime},
+			end_time = #{endTime},
+			course_duration = #{courseDuration},
+			course_id = #{courseId},
+			gym_id = #{gymId},
+			status = #{status},
+			version = version+1,
+			coach_reply = #{coachReply},
+			cancelor = #{cancelor},
+			cancel_time = #{cancelTime},
+			cancel_reason = #{cancelReason},
+			coach_score = #{coachScore},
+			rob_time = #{RobTime},
+			stu_ids = #{stuIds},
+			stu_names = #{stuNames},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks},
+			member_price=#{memberPrice},
+			coach_proportion=#{coachProportion}
+		WHERE id = #{id} AND version = #{version}
+	</update>
+	
+	<update id="updateStatus">
+	  update b_order SET
+	      status = #{status},
+	      start_time = #{startTime},
+	      end_time = #{endTime}
+	  where order_num = #{orderNum}   
+	</update>
+	
+	<update id="updateStatusFor">
+	  update b_order SET
+	      status = #{status}
+	  where order_num = #{orderNum}   
+	</update>
+	
+	<update id="delete">
+		UPDATE b_order SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
